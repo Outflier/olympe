@@ -29,28 +29,26 @@
 #  OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 #  SUCH DAMAGE.
 
-
-from __future__ import unicode_literals
-from __future__ import absolute_import
-from future.builtins import str
+from __future__ import absolute_import, unicode_literals
 
 import ctypes
-import olympe_deps as od
 import errno
 import json
-import numpy as np
 import os
 import re
 import threading
 import traceback
-from aenum import Enum, auto
 from collections import defaultdict, namedtuple
 from concurrent.futures import TimeoutError as FutureTimeoutError
 from logging import getLogger
 
-from olympe._private import py_object_cast, callback_decorator
-from olympe._private.pomp_loop_thread import Future, PompLoopThread
+import numpy as np
+from future.builtins import str
 
+import olympe_deps as od
+from aenum import Enum, auto
+from olympe._private import callback_decorator, py_object_cast
+from olympe._private.pomp_loop_thread import Future, PompLoopThread
 
 _copyright__ = "Copyright 2018, Parrot"
 
@@ -67,13 +65,10 @@ class PdrawState(Enum):
 
 
 VMetaFrameType = Enum(
-    'VMetaFrameType',
-    {
+    'VMetaFrameType', {
         re.compile('^VMETA_FRAME_TYPE_').sub('', v): k
         for k, v in od.vmeta_frame_type__enumvalues.items()
-    }
-)
-
+    })
 
 PDRAW_LOCAL_ADDR = b"0.0.0.0"
 PDRAW_LOCAL_STREAM_PORT = 55004
@@ -84,7 +79,6 @@ PDRAW_IFACE_ADRR = b""
 
 
 class H264Header(namedtuple('H264Header', ['sps', 'spslen', 'pps', 'ppslen'])):
-
     def tofile(self, f):
         start = bytearray([0, 0, 0, 1])
         if self.spslen > 0:
@@ -110,7 +104,6 @@ def StreamFactory():
 
 
 class VideoFrame:
-
     def __init__(self, logger, buf, media_id, stream, yuv_packed_buffer_pool,
                  session_metadata):
         self.logger = logger
@@ -154,32 +147,28 @@ class VideoFrame:
         try:
             res = od.vbuf_unref(self._buf)
             if res != 0:
-                self.logger.error("vbuf_unref unpacked frame error: {} {} {}".format(
-                    self._media_id,
-                    os.strerror(-res),
-                    ctypes.addressof(self._buf.contents)
-                ))
+                self.logger.error(
+                    "vbuf_unref unpacked frame error: {} {} {}".format(
+                        self._media_id, os.strerror(-res),
+                        ctypes.addressof(self._buf.contents)))
         finally:
             if self._yuv_packed_buffer:
                 res = od.vbuf_unref(self._yuv_packed_buffer)
                 if res != 0:
-                    self.logger.error("vbuf_unref packed frame error: {} {} {}".format(
-                        self._media_id,
-                        os.strerror(-res),
-                        ctypes.addressof(self._buf.contents)
-                    ))
+                    self.logger.error(
+                        "vbuf_unref packed frame error: {} {} {}".format(
+                            self._media_id, os.strerror(-res),
+                            ctypes.addressof(self._buf.contents)))
 
     def media_id(self):
         return self._media_id
 
     def _get_pdraw_video_frame(self):
         if not self._pdraw_video_frame:
-            res = od.vbuf_metadata_get(
-                self._buf,
-                self._stream['video_sink'],
-                od.POINTER_T(ctypes.c_uint32)(),
-                od.POINTER_T(ctypes.c_uint64)(),
-                ctypes.byref(self._pdraw_video_frame))
+            res = od.vbuf_metadata_get(self._buf, self._stream['video_sink'],
+                                       od.POINTER_T(ctypes.c_uint32)(),
+                                       od.POINTER_T(ctypes.c_uint64)(),
+                                       ctypes.byref(self._pdraw_video_frame))
 
             if res < 0:
                 self.logger.error(
@@ -187,7 +176,8 @@ class VideoFrame:
                 self._pdraw_video_frame = od.POINTER_T(ctypes.c_ubyte)()
                 return self._pdraw_video_frame
             self._pdraw_video_frame = ctypes.cast(
-                self._pdraw_video_frame, od.POINTER_T(od.struct_pdraw_video_frame))
+                self._pdraw_video_frame,
+                od.POINTER_T(od.struct_pdraw_video_frame))
 
         if self._stream['type'] == od.PDRAW_VIDEO_MEDIA_FORMAT_H264:
             return self._pdraw_video_frame
@@ -196,21 +186,17 @@ class VideoFrame:
             return self._yuv_packed_video_frame
 
         if not self._yuv_packed_buffer:
-            res = od.vbuf_pool_get(
-                self._yuv_packed_buffer_pool,
-                0,
-                ctypes.byref(self._yuv_packed_buffer)
-            )
+            res = od.vbuf_pool_get(self._yuv_packed_buffer_pool, 0,
+                                   ctypes.byref(self._yuv_packed_buffer))
             if res < 0:
                 self.logger.error(
                     'vbuf_pool_get returned error {}'.format(res))
                 return self._yuv_packed_video_frame
         self._yuv_packed_video_frame = ctypes.pointer(
             self._yuv_packed_video_frame_storage)
-        res = od.pdraw_pack_yuv_frame(
-            self._pdraw_video_frame,
-            self._yuv_packed_video_frame,
-            self._yuv_packed_buffer)
+        res = od.pdraw_pack_yuv_frame(self._pdraw_video_frame,
+                                      self._yuv_packed_video_frame,
+                                      self._yuv_packed_buffer)
         if res < 0:
             self._yuv_packed_video_frame = od.POINTER_T(
                 od.struct_pdraw_video_frame)()
@@ -232,7 +218,8 @@ class VideoFrame:
         if self._stream['type'] == od.PDRAW_VIDEO_MEDIA_FORMAT_H264:
             # get the size in bytes of the raw data
             self._frame_size = od.vbuf_get_size(self._buf)
-            self.logger.debug("Frame of {} bytes received".format(self._frame_size))
+            self.logger.debug("Frame of {} bytes received".format(
+                self._frame_size))
 
             # retrieve the raw data from the buffer
             od.vbuf_get_cdata.restype = ctypes.POINTER(ctypes.c_ubyte)
@@ -249,12 +236,11 @@ class VideoFrame:
                 return self._frame_pointer, self._frame_size
             frame = frame.contents
             self._frame_pointer = ctypes.cast(
-                frame._1.yuv.plane[0],
-                ctypes.POINTER(ctypes.c_ubyte)
-            )
+                frame.pdraw_video_frame_0.yuv.plane[0],
+                ctypes.POINTER(ctypes.c_ubyte))
             # assume I420 or NV12 3/2 ratio
-            height = frame._1.yuv.height
-            width = frame._1.yuv.width
+            height = frame.pdraw_video_frame_0.yuv.height
+            width = frame.pdraw_video_frame_0.yuv.width
             self._frame_size = int(3 * height * width / 2)
         return self._frame_pointer, self._frame_size
 
@@ -268,18 +254,17 @@ class VideoFrame:
         if not frame_pointer:
             return self._frame_array
         if self._stream['type'] == od.PDRAW_VIDEO_MEDIA_FORMAT_H264:
-            shape = (frame_size,)
+            shape = (frame_size, )
         elif self._stream['type'] == od.PDRAW_VIDEO_MEDIA_FORMAT_YUV:
             frame = self._get_pdraw_video_frame()
             if not frame:
                 return self._frame_array
             frame = frame.contents
-            height = frame._1.yuv.height
-            width = frame._1.yuv.width
+            height = frame.pdraw_video_frame_0.yuv.height
+            width = frame.pdraw_video_frame_0.yuv.width
             # assume I420 or NV12 3/2 ratio
             shape = (int(3 * height / 2), width)
-        self._frame_array = np.ctypeslib.as_array(
-            frame_pointer, shape=shape)
+        self._frame_array = np.ctypeslib.as_array(frame_pointer, shape=shape)
         return self._frame_array
 
     def info(self):
@@ -294,8 +279,8 @@ class VideoFrame:
         # convert the binary metadata into json
         self._frame_info = {}
         jsonbuf = ctypes.create_string_buffer(4096)
-        res = od.pdraw_video_frame_to_json_str(
-            frame, jsonbuf, ctypes.sizeof(jsonbuf))
+        res = od.pdraw_video_frame_to_json_str(frame, jsonbuf,
+                                               ctypes.sizeof(jsonbuf))
         if res < 0:
             self.logger.error(
                 'pdraw_frame_metadata_to_json returned error {}'.format(res))
@@ -335,14 +320,14 @@ class VideoFrame:
 
 
 class Pdraw(object):
-
-    def __init__(self,
-                 name=None,
-                 device_name=None,
-                 buffer_queue_size=8,
-                 legacy=False,
-                 pdraw_thread_loop=None,
-                 ):
+    def __init__(
+        self,
+        name=None,
+        device_name=None,
+        buffer_queue_size=8,
+        legacy=False,
+        pdraw_thread_loop=None,
+    ):
         """
         :param name: (optional) pdraw client name (used by Olympe logs)
         :type name: str
@@ -372,7 +357,8 @@ class Pdraw(object):
             self.own_pdraw_thread_loop = False
             self.pdraw_thread_loop = pdraw_thread_loop
 
-        self.callbacks_thread_loop = PompLoopThread(self.logger, parent=self.pdraw_thread_loop)
+        self.callbacks_thread_loop = PompLoopThread(
+            self.logger, parent=self.pdraw_thread_loop)
         self.callbacks_thread_loop.start()
         self.buffer_queue_size = buffer_queue_size
         self.pomp_loop = self.pdraw_thread_loop.pomp_loop
@@ -392,14 +378,12 @@ class Pdraw(object):
         self.session_metadata = {}
 
         self.outfiles = {
-            od.PDRAW_VIDEO_MEDIA_FORMAT_H264:
-            {
+            od.PDRAW_VIDEO_MEDIA_FORMAT_H264: {
                 'data': None,
                 'meta': None,
                 'info': None,
             },
-            od.PDRAW_VIDEO_MEDIA_FORMAT_YUV:
-            {
+            od.PDRAW_VIDEO_MEDIA_FORMAT_YUV: {
                 'data': None,
                 'meta': None,
                 'info': None,
@@ -439,9 +423,8 @@ class Pdraw(object):
             "end_of_range": self._end_of_range,
         })
 
-        self.video_sink_cb = od.struct_pdraw_video_sink_cbs.bind({
-            "flush": self._video_sink_flush
-        })
+        self.video_sink_cb = od.struct_pdraw_video_sink_cbs.bind(
+            {"flush": self._video_sink_flush})
 
         self.vbuf_cbs = od.struct_vbuf_cbs()
         res = od.vbuf_generic_get_cbs(ctypes.pointer(self.vbuf_cbs))
@@ -451,13 +434,8 @@ class Pdraw(object):
             raise RuntimeError("ERROR: {}".format(msg))
 
         self.yuv_packed_buffer_pool = od.POINTER_T(od.struct_vbuf_pool)()
-        res = od.vbuf_pool_new(
-            self.buffer_queue_size,
-            0,
-            0,
-            self.vbuf_cbs,
-            ctypes.byref(self.yuv_packed_buffer_pool)
-        )
+        res = od.vbuf_pool_new(self.buffer_queue_size, 0, 0, self.vbuf_cbs,
+                               ctypes.byref(self.yuv_packed_buffer_pool))
         if res != 0:
             msg = "Error while creating yuv packged buffer pool {}".format(res)
             self.logger.error(msg)
@@ -512,21 +490,21 @@ class Pdraw(object):
 
     @callback_decorator()
     def _dispose(self):
-        self.pdraw_thread_loop.unregister_cleanup(self.dispose, ignore_error=True)
-        return self.pdraw_thread_loop.run_async(
-            self._dispose_impl)
+        self.pdraw_thread_loop.unregister_cleanup(self.dispose,
+                                                  ignore_error=True)
+        return self.pdraw_thread_loop.run_async(self._dispose_impl)
 
     @callback_decorator()
     def _dispose_impl(self):
         # cleanup some FDs from the callbacks thread loop that might have been lost
         for stream in self.streams.values():
             if stream['video_queue_event'] is not None:
-                self.logger.warning("cleanup leftover pdraw callbacks eventfds")
+                self.logger.warning(
+                    "cleanup leftover pdraw callbacks eventfds")
                 self.callbacks_thread_loop.remove_event_from_loop(
                     stream['video_queue_event'])
                 stream['video_queue_event'] = None
-        f = self.close().then(
-            lambda _: self._stop(), deferred=True)
+        f = self.close().then(lambda _: self._stop(), deferred=True)
         return f
 
     @callback_decorator()
@@ -536,7 +514,8 @@ class Pdraw(object):
         # cleanup some FDs from the callbacks thread loop that might have been lost
         for stream in self.streams.values():
             if stream['video_queue_event'] is not None:
-                self.logger.warning("cleanup leftover pdraw callbacks eventfds")
+                self.logger.warning(
+                    "cleanup leftover pdraw callbacks eventfds")
                 self.callbacks_thread_loop.remove_event_from_loop(
                     stream['video_queue_event'])
                 stream['video_queue_event'] = None
@@ -580,15 +559,10 @@ class Pdraw(object):
         Opening pdraw single stream (legacy API)
         """
         res = od.pdraw_open_single_stream(
-            self.pdraw,
-            PDRAW_LOCAL_ADDR,
-            self.local_stream_port,
-            self.local_control_port,
-            self.server_addr,
-            PDRAW_REMOTE_STREAM_PORT,
-            PDRAW_REMOTE_CONTROL_PORT,
-            PDRAW_IFACE_ADRR
-        )
+            self.pdraw, PDRAW_LOCAL_ADDR, self.local_stream_port,
+            self.local_control_port, self.server_addr,
+            PDRAW_REMOTE_STREAM_PORT, PDRAW_REMOTE_CONTROL_PORT,
+            PDRAW_IFACE_ADRR)
 
         if res != 0:
             self.logger.error(
@@ -605,13 +579,14 @@ class Pdraw(object):
         if self.resource_name.startswith("replay/"):
             if self.media_name is None:
                 self.logger.error(
-                    "Error media_name should be provided in video stream replay mode")
+                    "Error media_name should be provided in video stream replay mode"
+                )
                 return False
         res = od.pdraw_open_url(self.pdraw, self.url)
 
         if res != 0:
-            self.logger.error(
-                "Error while opening pdraw url: {} ({})".format(self.url, res))
+            self.logger.error("Error while opening pdraw url: {} ({})".format(
+                self.url, res))
             return False
         else:
             self.logger.info("Opening pdraw url OK: {}".format(self.url))
@@ -624,8 +599,10 @@ class Pdraw(object):
         according to the device type
         """
         self._open_resp_future = Future(self.pdraw_thread_loop)
-        if self.state not in (PdrawState.Error, PdrawState.Closed, PdrawState.Created):
-            self.logger.warning("Cannot open stream from {}".format(self.state))
+        if self.state not in (PdrawState.Error, PdrawState.Closed,
+                              PdrawState.Created):
+            self.logger.warning("Cannot open stream from {}".format(
+                self.state))
             self._open_resp_future.set_result(False)
             return self._open_resp_future
 
@@ -648,11 +625,14 @@ class Pdraw(object):
         """
         Close a playing or paused video stream session
         """
-        if self.state in (PdrawState.Opened, PdrawState.Paused, PdrawState.Playing, PdrawState.Error):
-            self.logger.debug("pdraw closing from the {} state".format(self.state))
+        if self.state in (PdrawState.Opened, PdrawState.Paused,
+                          PdrawState.Playing, PdrawState.Error):
+            self.logger.debug("pdraw closing from the {} state".format(
+                self.state))
             if self._close_resp_future.done():
                 self._close_resp_future = Future(self.pdraw_thread_loop)
-                self._close_resp_future.add_done_callback(self._on_close_resp_done)
+                self._close_resp_future.add_done_callback(
+                    self._on_close_resp_done)
             f = self._close_resp_future
             self.state = PdrawState.Closing
             self.pdraw_thread_loop.run_async(self._close_stream)
@@ -706,7 +686,8 @@ class Pdraw(object):
         close_resp_future.cancel()
         self.logger.error("Closing pdraw demuxer timedout")
 
-        if self.state not in (PdrawState.Closed, PdrawState.Stopped, PdrawState.Error):
+        if self.state not in (PdrawState.Closed, PdrawState.Stopped,
+                              PdrawState.Error):
             return
 
         # FIXME: workaround pdraw closing timeout
@@ -718,9 +699,11 @@ class Pdraw(object):
 
     def _open_resp(self, pdraw, status, userdata):
         self.logger.debug("_open_resp called")
-        self.local_stream_port = od.pdraw_get_single_stream_local_stream_port(self.pdraw)
+        self.local_stream_port = od.pdraw_get_single_stream_local_stream_port(
+            self.pdraw)
 
-        self.local_control_port = od.pdraw_get_single_stream_local_control_port(self.pdraw)
+        self.local_control_port = od.pdraw_get_single_stream_local_control_port(
+            self.pdraw)
 
         if status != 0:
             self.state = PdrawState.Error
@@ -749,11 +732,9 @@ class Pdraw(object):
 
     def _pdraw_new(self):
         res = od.pdraw_new(
-            self.pomp_loop,
-            self.cbs,
-            ctypes.cast(ctypes.pointer(ctypes.py_object(self)), ctypes.c_void_p),
-            ctypes.byref(self.pdraw)
-        )
+            self.pomp_loop, self.cbs,
+            ctypes.cast(ctypes.pointer(ctypes.py_object(self)),
+                        ctypes.c_void_p), ctypes.byref(self.pdraw))
         if res != 0:
             msg = "Error while creating pdraw interface: {}".format(res)
             self.logger.error(msg)
@@ -811,25 +792,20 @@ class Pdraw(object):
         selected_media_id = 0
         selected_media_idx = 0
         for idx in range(count):
-            self.logger.info(
-                "_select_demuxer_media: "
-                "idx={} media_id={} name={} default={}".format(
-                    idx, media[idx].media_id,
-                    od.string_cast(media[idx].name),
-                    str(bool(media[idx].is_default)))
-            )
-            if (self.media_name is not None and
-                    self.media_name == od.string_cast(media[idx].name)):
+            self.logger.info("_select_demuxer_media: "
+                             "idx={} media_id={} name={} default={}".format(
+                                 idx, media[idx].media_id,
+                                 od.string_cast(media[idx].name),
+                                 str(bool(media[idx].is_default))))
+            if (self.media_name is not None
+                    and self.media_name == od.string_cast(media[idx].name)):
                 selected_media_id = media[idx].media_id
                 selected_media_idx = idx
-        if (
-            self.media_name is not None and
-            od.string_cast(media[selected_media_idx].name) != self.media_name
-        ):
-            self.logger.warning(
-                "media_name {} is unavailable. "
-                "Selecting the default media instead".format(self.media_name)
-            )
+        if (self.media_name is not None and od.string_cast(
+                media[selected_media_idx].name) != self.media_name):
+            self.logger.warning("media_name {} is unavailable. "
+                                "Selecting the default media instead".format(
+                                    self.media_name))
         return selected_media_id
 
     def _media_added(self, pdraw, media_info, userdata):
@@ -837,25 +813,25 @@ class Pdraw(object):
         self.logger.info("_media_added id : {}".format(id_))
 
         # store the information if supported media type, otherwise exit
-        if (media_info.contents._2.video.format !=
-                od.PDRAW_VIDEO_MEDIA_FORMAT_YUV and
-                media_info.contents._2.video.format !=
+        if (media_info.contents.pdraw_media_info_0.video.format !=
+                od.PDRAW_VIDEO_MEDIA_FORMAT_YUV
+                and media_info.contents.pdraw_media_info_0.video.format !=
                 od.PDRAW_VIDEO_MEDIA_FORMAT_H264):
-            self.logger.warning(
-                'Ignoring media id {} (type {})'.format(
-                    id_, media_info.contents._2.video.format))
+            self.logger.warning('Ignoring media id {} (type {})'.format(
+                id_, media_info.contents.pdraw_media_info_0.video.format))
             return
-        self.streams[id_]['type'] = int(media_info.contents._2.video.format)
-        if (media_info.contents._2.video.format ==
+        self.streams[id_]['type'] = int(
+            media_info.contents.pdraw_media_info_0.video.format)
+        if (media_info.contents.pdraw_media_info_0.video.format ==
                 od.PDRAW_VIDEO_MEDIA_FORMAT_H264):
-                header = media_info.contents._2.video._2.h264
-                header = H264Header(
-                    bytearray(header.sps),
-                    int(header.spslen),
-                    bytearray(header.pps),
-                    int(header.ppslen),
-                )
-                self.streams[id_]['h264_header'] = header
+            header = media_info.contents.pdraw_media_info_0.video.pdraw_video_info_0.h264
+            header = H264Header(
+                bytearray(header.sps),
+                int(header.spslen),
+                bytearray(header.pps),
+                int(header.ppslen),
+            )
+            self.streams[id_]['h264_header'] = header
 
         # start a video sink attached to the new media
         video_sink_params = od.struct_pdraw_video_sink_params(
@@ -867,13 +843,9 @@ class Pdraw(object):
         self.streams[id_]['id'] = id_
 
         res = od.pdraw_start_video_sink(
-            pdraw,
-            id_,
-            video_sink_params,
-            self.video_sink_cb,
+            pdraw, id_, video_sink_params, self.video_sink_cb,
             self.streams[id_]['id_userdata'],
-            ctypes.byref(self.streams[id_]['video_sink'])
-        )
+            ctypes.byref(self.streams[id_]['video_sink']))
         if res != 0 or not self.streams[id_]['video_sink']:
             self.logger.error("Unable to start video sink")
             return
@@ -892,9 +864,7 @@ class Pdraw(object):
         # add the file description to our pomp loop
         self.callbacks_thread_loop.add_event_to_loop(
             self.streams[id_]['video_queue_event'],
-            lambda *args: self._video_sink_queue_event(*args),
-            id_
-        )
+            lambda *args: self._video_sink_queue_event(*args), id_)
 
     def _media_removed(self, pdraw, media_info, userdata):
         id_ = media_info.contents.id
@@ -909,8 +879,7 @@ class Pdraw(object):
         if not self.pdraw:
             self.logger.error(
                 "_media_removed called with a destroyed pdraw id : {}".format(
-                    id_)
-            )
+                    id_))
             return
         with self.streams[id_]['video_sink_lock']:
             if self.streams[id_]['video_queue_event']:
@@ -920,13 +889,16 @@ class Pdraw(object):
 
             if not self.streams[id_]['video_sink']:
                 self.logger.error(
-                    'pdraw_video_sink for media_id {} has already been stopped'.format(id_))
+                    'pdraw_video_sink for media_id {} has already been stopped'
+                    .format(id_))
                 return
-            res = od.pdraw_stop_video_sink(pdraw, self.streams[id_]['video_sink'])
+            res = od.pdraw_stop_video_sink(pdraw,
+                                           self.streams[id_]['video_sink'])
             if res < 0:
                 self.logger.error('pdraw_stop_video_sink() returned %s' % res)
             self.streams[id_]['video_queue'] = None
-            self.streams[id_]['video_sink'] = od.POINTER_T(od.struct_pdraw_video_sink)()
+            self.streams[id_]['video_sink'] = od.POINTER_T(
+                od.struct_pdraw_video_sink)()
 
     def _end_of_range(self, pdraw, timestamp, userdata):
         self.logger.info("_end_of_range")
@@ -942,17 +914,15 @@ class Pdraw(object):
         # FIXME: Workaround video_sink_flush called with destroyed media
         if not self.pdraw:
             self.logger.error(
-                "_video_sink_flush called with a destroyed pdraw id : {}".format(
-                    id_)
-            )
+                "_video_sink_flush called with a destroyed pdraw id : {}".
+                format(id_))
             return -errno.EINVAL
 
         # FIXME: Workaround video_sink_flush called with destroyed video queue
         if not self.streams[id_]['video_queue']:
             self.logger.error(
-                "_video_sink_flush called with a destroyed queue id : {}".format(
-                    id_)
-            )
+                "_video_sink_flush called with a destroyed queue id : {}".
+                format(id_))
             return -errno.EINVAL
 
         with self.streams[id_]['video_sink_lock']:
@@ -1013,9 +983,8 @@ class Pdraw(object):
 
     def _pop_stream_buffer(self, id_):
         buf = od.POINTER_T(od.struct_vbuf_buffer)()
-        ret = od.vbuf_queue_pop(
-            self.streams[id_]['video_queue'], 0, ctypes.byref(buf)
-        )
+        ret = od.vbuf_queue_pop(self.streams[id_]['video_queue'], 0,
+                                ctypes.byref(buf))
         if ret < 0:
             if ret != -errno.EAGAIN:
                 self.logger.error('vbuf_queue_pop returned error %d' % ret)
@@ -1031,14 +1000,9 @@ class Pdraw(object):
         buf = self._pop_stream_buffer(id_)
         if not buf:
             return False
-        video_frame = VideoFrame(
-            self.logger,
-            buf,
-            id_,
-            self.streams[id_],
-            self.yuv_packed_buffer_pool,
-            self.get_session_metadata()
-        )
+        video_frame = VideoFrame(self.logger, buf, id_, self.streams[id_],
+                                 self.yuv_packed_buffer_pool,
+                                 self.get_session_metadata())
         try:
             self._process_stream_buffer(id_, video_frame)
             return True
@@ -1076,23 +1040,20 @@ class Pdraw(object):
                     stream['h264_header'].tofile(f)
             frame_array = video_frame.as_ndarray()
             if frame_array is not None:
-                f.write(ctypes.string_at(
-                    frame_array.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)),
-                    frame_array.size,
-                ))
+                f.write(
+                    ctypes.string_at(
+                        frame_array.ctypes.data_as(
+                            ctypes.POINTER(ctypes.c_ubyte)),
+                        frame_array.size,
+                    ))
 
         # call callbacks when existing
         cb = self.frame_callbacks[mediatype]
         if cb is not None:
             cb(video_frame)
 
-    def set_output_files(self,
-                         h264_data_file,
-                         h264_meta_file,
-                         h264_info_file,
-                         raw_data_file,
-                         raw_meta_file,
-                         raw_info_file):
+    def set_output_files(self, h264_data_file, h264_meta_file, h264_info_file,
+                         raw_data_file, raw_meta_file, raw_info_file):
         """
         Records the video stream session to the disk
 
@@ -1112,12 +1073,14 @@ class Pdraw(object):
                 'Cannot set video streaming files while streaming is on.')
 
         for mediatype, datatype, filepath, attrib in (
-                (od.PDRAW_VIDEO_MEDIA_FORMAT_H264, 'data', h264_data_file, 'wb'),
-                (od.PDRAW_VIDEO_MEDIA_FORMAT_H264, 'meta', h264_meta_file, 'w'),
-                (od.PDRAW_VIDEO_MEDIA_FORMAT_H264, 'info', h264_info_file, 'w'),
-                (od.PDRAW_VIDEO_MEDIA_FORMAT_YUV,  'data', raw_data_file,  'wb'),
-                (od.PDRAW_VIDEO_MEDIA_FORMAT_YUV,  'meta', raw_meta_file,  'w'),
-                (od.PDRAW_VIDEO_MEDIA_FORMAT_YUV,  'info', raw_info_file,  'w')):
+            (od.PDRAW_VIDEO_MEDIA_FORMAT_H264, 'data', h264_data_file,
+             'wb'), (od.PDRAW_VIDEO_MEDIA_FORMAT_H264, 'meta', h264_meta_file,
+                     'w'), (od.PDRAW_VIDEO_MEDIA_FORMAT_H264, 'info',
+                            h264_info_file, 'w'),
+            (od.PDRAW_VIDEO_MEDIA_FORMAT_YUV, 'data', raw_data_file,
+             'wb'), (od.PDRAW_VIDEO_MEDIA_FORMAT_YUV, 'meta', raw_meta_file,
+                     'w'), (od.PDRAW_VIDEO_MEDIA_FORMAT_YUV, 'info',
+                            raw_info_file, 'w')):
             if self.outfiles[mediatype][datatype]:
                 self.outfiles[mediatype][datatype].close()
                 self.outfiles[mediatype][datatype] = None
@@ -1174,7 +1137,8 @@ class Pdraw(object):
                               (od.PDRAW_VIDEO_MEDIA_FORMAT_YUV, raw_cb)):
             self.frame_callbacks[mediatype] = callback_decorator(
                 logger=self.logger)(cb)
-        for mediatype, cb in ((od.PDRAW_VIDEO_MEDIA_FORMAT_H264, flush_h264_cb),
+        for mediatype, cb in ((od.PDRAW_VIDEO_MEDIA_FORMAT_H264,
+                               flush_h264_cb),
                               (od.PDRAW_VIDEO_MEDIA_FORMAT_YUV, flush_raw_cb)):
             self.flush_callbacks[mediatype] = callback_decorator(
                 logger=self.logger)(cb)
@@ -1195,7 +1159,11 @@ class Pdraw(object):
                 if f:
                     f.close()
 
-    def play(self, url=None, media_name="DefaultVideo", server_addr=None, resource_name="live"):
+    def play(self,
+             url=None,
+             media_name="DefaultVideo",
+             server_addr=None,
+             resource_name="live"):
         """
         Play a video
 
@@ -1240,8 +1208,8 @@ class Pdraw(object):
             self.server_addr = server_addr
 
         if url is None:
-            self.url = b"rtsp://%s/%s" % (
-                self.server_addr, self.resource_name.encode())
+            self.url = b"rtsp://%s/%s" % (self.server_addr,
+                                          self.resource_name.encode())
         else:
             if isinstance(url, bytes):
                 url = url.decode('utf-8')
@@ -1253,7 +1221,8 @@ class Pdraw(object):
             url = url.encode('utf-8')
             self.url = url
             if self.is_legacy():
-                self.logger.warning("Cannot open streaming url for legacy drones")
+                self.logger.warning(
+                    "Cannot open streaming url for legacy drones")
 
         # reset session metadata from any previous session
         self.session_metadata = {}
@@ -1326,14 +1295,13 @@ class Pdraw(object):
             return self.session_metadata
 
         vmeta_session = od.struct_vmeta_session()
-        res = od.pdraw_get_peer_session_metadata(
-            self.pdraw, ctypes.pointer(vmeta_session))
+        res = od.pdraw_get_peer_session_metadata(self.pdraw,
+                                                 ctypes.pointer(vmeta_session))
         if res != 0:
             msg = "Unable to get sessions metata"
             self.logger.error(msg)
             return None
-        self.session_metadata = od.struct_vmeta_session.as_dict(
-            vmeta_session)
+        self.session_metadata = od.struct_vmeta_session.as_dict(vmeta_session)
         return self.session_metadata
 
     def is_legacy(self):
