@@ -334,6 +334,12 @@ class VideoFrame:
         """
         return self._session_metadata
 
+    def format(self):
+        info = self.info()
+        if "yuv" not in info:
+            return None
+        return info["yuv"]["format"]
+
 
 class Pdraw(object):
     def __init__(
