@@ -744,21 +744,14 @@ class Pdraw(object):
 
     def _close_resp(self, pdraw, status, userdata):
         self._close_output_files()
-        if status != 0:
-            self.logger.error("_close_resp called {}".format(status))
-            self._close_resp_future.set_result(False)
-            self.state = PdrawState.Error
-        else:
-            self.logger.info("_close_resp called {}".format(status))
-            self.state = PdrawState.Closed
-            self._close_resp_future.set_result(True)
-
+        self.state = PdrawState.Error if status != 0 else PdrawState.Closed
         if self.pdraw:
             res = od.pdraw_destroy(self.pdraw)
             if res != 0:
                 self.logger.error("Cannot destroy pdraw object")
         self.pdraw = od.POINTER_T(od.struct_pdraw)()
-        self._close_resp_future.set_result(True)
+        self.logger.info("_close_resp called {}".format(status))
+        self._close_resp_future.set_result(status == 0)
 
     def _pdraw_new(self):
         res = od.pdraw_new(
