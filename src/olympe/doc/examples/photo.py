@@ -12,15 +12,17 @@ import tempfile
 import xml.etree.ElementTree as ET
 
 
-olympe.log.update_config({
-    "loggers": {
-        "olympe": {"level": "INFO"},
-        "photo_example": {
-            "level": "INFO",
-            "handlers": ["console"],
-        },
+olympe.log.update_config(
+    {
+        "loggers": {
+            "olympe": {"level": "INFO"},
+            "photo_example": {
+                "level": "INFO",
+                "handlers": ["console"],
+            },
+        }
     }
-})
+)
 
 logger = getLogger("photo_example")
 
@@ -69,13 +71,15 @@ def take_photo_burst(drone):
             image_data = image_file.read()
             image_xmp_start = image_data.find(b"<x:xmpmeta")
             image_xmp_end = image_data.find(b"</x:xmpmeta")
-            image_xmp = ET.fromstring(image_data[image_xmp_start: image_xmp_end + 12])
+            image_xmp = ET.fromstring(image_data[image_xmp_start : image_xmp_end + 12])
             for image_meta in image_xmp[0][0]:
                 xmp_tag = re.sub(r"{[^}]*}", "", image_meta.tag)
                 xmp_value = image_meta.text
                 # only print the XMP tags we are interested in
                 if xmp_tag in XMP_TAGS_OF_INTEREST:
-                    logger.info("{} {} {}".format(resource.resource_id, xmp_tag, xmp_value))
+                    logger.info(
+                        "{} {} {}".format(resource.resource_id, xmp_tag, xmp_value)
+                    )
         resource_count += 1
     logger.info("{} media resource downloaded".format(resource_count))
     assert resource_count == 14, "resource count == {} != 14".format(resource_count)
@@ -86,24 +90,26 @@ def setup_photo_burst_mode(drone):
     drone(set_camera_mode(cam_id=0, value="photo")).wait()
     # For the file_format: jpeg is the only available option
     # dng is not supported in burst mode
-    assert drone(
-        set_photo_mode(
-            cam_id=0,
-            mode="burst",
-            format="rectilinear",
-            file_format="jpeg",
-            burst="burst_14_over_1s",
-            bracketing="preset_1ev",
-            capture_interval=0.0,
+    assert (
+        drone(
+            set_photo_mode(
+                cam_id=0,
+                mode="burst",
+                format="rectilinear",
+                file_format="jpeg",
+                burst="burst_14_over_1s",
+                bracketing="preset_1ev",
+                capture_interval=0.0,
+            )
         )
-    ).wait().success()
+        .wait()
+        .success()
+    )
 
 
 def main(drone):
     drone.connect()
-    assert drone.media(
-        indexing_state(state="indexed")
-    ).wait(_timeout=60).success()
+    assert drone.media(indexing_state(state="indexed")).wait(_timeout=60).success()
     setup_photo_burst_mode(drone)
     take_photo_burst(drone)
     drone.disconnect()

@@ -44,35 +44,27 @@ from sphinx.cmd.build import main as sphinx_build
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("-v", "--version", action="store_true", help="Displays version")
+
     parser.add_argument(
-        '-v', '--version',
-        action="store_true",
-        help=u'Displays version'
+        "--gendoc", dest="doc_out_directory", help="Generate olympe documentation"
     )
 
     parser.add_argument(
-        '--gendoc',
-        dest="doc_out_directory",
-        help="Generate olympe documentation"
-    )
-
-    parser.add_argument(
-        '--gendoc_context_path',
-        dest="doc_context",
-        help="Documentation context path"
+        "--gendoc_context_path", dest="doc_context", help="Documentation context path"
     )
 
     ns = parser.parse_args()
     args = vars(ns)
 
-    if args['doc_out_directory']:
+    if args["doc_out_directory"]:
         cmd = ["-b", "html"]
         if args["doc_context"]:
             cmd += ["-D", "custom_html_context_path={}".format(args["doc_context"])]
         cmd += ["{}/doc".format(os.path.dirname(olympe.__file__))]
-        cmd += [args['doc_out_directory']]
+        cmd += [args["doc_out_directory"]]
         sys.exit(sphinx_build(cmd))
 
-    if 'version' in args and args['version']:
+    if "version" in args and args["version"]:
         print(olympe.VERSION_STRING)
         sys.exit(0)

@@ -52,11 +52,12 @@ class ArsdkXml(object):
         try:
             self.path = os.environ.get(
                 "OLYMPE_XML",
-                os.path.join(os.path.dirname(arsdkparser.__file__), "arsdk-xml/xml")
+                os.path.join(os.path.dirname(arsdkparser.__file__), "arsdk-xml/xml"),
             )
         except KeyError:
             raise RuntimeError(
-                "OLYMPE_XML environment variable doesn't exist. It should point to arsdk-xml/xml")
+                "OLYMPE_XML environment variable doesn't exist. It should point to arsdk-xml/xml"
+            )
         self.ctx = None
         self.parse_xml()
 

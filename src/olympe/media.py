@@ -371,13 +371,14 @@ class _MediaCommand(MediaEvent):
 
 class _MediaEventExpectationBase(Expectation):
     def __init__(
-            self,
-            event_name,
-            id_field=None,
-            id_value=None,
-            data_context=None,
-            _timeout=None,
-            **kwds):
+        self,
+        event_name,
+        id_field=None,
+        id_value=None,
+        data_context=None,
+        _timeout=None,
+        **kwds,
+    ):
         super().__init__()
         self.set_timeout(_timeout)
         data = {**{id_field: id_value}, **kwds}
@@ -404,7 +405,7 @@ class _MediaEventExpectationBase(Expectation):
         if media_event.name != self._event_name:
             return self
         self._received_events.append(media_event)
-        if (self._id_field is None or self._id_value is None):
+        if self._id_field is None or self._id_value is None:
             self._matched_event = media_event
             self.set_success()
             return self
@@ -413,8 +414,8 @@ class _MediaEventExpectationBase(Expectation):
         if received_data[self._id_field] == self._id_value:
             for name, value in expected_data.items():
                 if value is not None and (
-                        name not in received_data or
-                        received_data[name] != value):
+                    name not in received_data or received_data[name] != value
+                ):
                     break
             else:
                 self._matched_event = media_event
@@ -460,14 +461,16 @@ class _MediaEventExpectationBase(Expectation):
 
 
 class _MediaEventExpectation(_MediaEventExpectationBase):
-    def __init__(self, event_name, data_context=None, media_id=None, _timeout=None, **kwds):
+    def __init__(
+        self, event_name, data_context=None, media_id=None, _timeout=None, **kwds
+    ):
         return super().__init__(
             event_name,
             id_field="media_id",
             id_value=media_id,
             data_context=data_context,
             _timeout=_timeout,
-            **kwds
+            **kwds,
         )
 
     def copy(self):
@@ -475,14 +478,16 @@ class _MediaEventExpectation(_MediaEventExpectationBase):
 
 
 class _ResourceEventExpectation(_MediaEventExpectationBase):
-    def __init__(self, event_name, data_context=None, resource_id=None, _timeout=None, **kwds):
+    def __init__(
+        self, event_name, data_context=None, resource_id=None, _timeout=None, **kwds
+    ):
         return super().__init__(
             event_name,
             id_field="resource_id",
             id_value=resource_id,
             data_context=data_context,
             _timeout=_timeout,
-            **kwds
+            **kwds,
         )
 
     def copy(self):
@@ -551,10 +556,7 @@ class _ResourceCheckStateExpectation(_CheckStateExpectation):
 class media_created(_MediaEventExpectation):
     def __init__(self, media_id=None, _timeout=None):
         super().__init__(
-            "media_created",
-            data_context="media",
-            media_id=media_id,
-            _timeout=_timeout
+            "media_created", data_context="media", media_id=media_id, _timeout=_timeout
         )
 
     def copy(self):
@@ -584,7 +586,7 @@ class resource_created(_ResourceEventExpectation):
             data_context="resource",
             resource_id=resource_id,
             media_id=media_id,
-            _timeout=_timeout
+            _timeout=_timeout,
         )
 
     def copy(self):
@@ -872,8 +874,7 @@ class _download_resource(Expectation):
             resource_id=resource_id, with_md5=self._integrity_check
         )
         if self._resource is None:
-            self._media.logger.error(
-                "Unknown resource {}".format(resource_id))
+            self._media.logger.error("Unknown resource {}".format(resource_id))
             self.cancel()
             return
         try:
@@ -962,8 +963,7 @@ class _download_resource(Expectation):
             # The following only close the duplicated socket fd on our side
             self._sock.close()
         except OSError:
-            self._media.logger.exception(
-                "Failed to release socket {}".format(self._fd))
+            self._media.logger.exception("Failed to release socket {}".format(self._fd))
         # The original socket (that has been dup'ed) is still owned by the
         # urllib connection pool urllib will decide what to do with this
         # connection and this is not our business
@@ -1156,17 +1156,20 @@ class download_media(MultipleDownloadMixin):
         media_context = scheduler.context("olympe.media")
         media_context.subscribe(
             lambda event, scheduler: scheduler.run(
-                self._on_resource_created, event, scheduler),
-            resource_created(media_id=self._media_id)
+                self._on_resource_created, event, scheduler
+            ),
+            resource_created(media_id=self._media_id),
         )
         self._media = media_context._get_media(self._media_id)
         for resource_id in list(self._media.resources.keys()):
             self.expectations.append(
-                (lambda id_: download_resource(
-                    id_,
-                    download_dir=self._download_dir,
-                    integrity_check=self._integrity_check,
-                ))(resource_id)
+                (
+                    lambda id_: download_resource(
+                        id_,
+                        download_dir=self._download_dir,
+                        integrity_check=self._integrity_check,
+                    )
+                )(resource_id)
             )
             scheduler._schedule(self.expectations[-1])
 
@@ -1447,9 +1450,7 @@ class Media(AbstractScheduler):
                 )
                 return
             if resource.media_id not in self._media_state:
-                self.logger.error(
-                    "ResourceInfo created with a (yet) unknown media_id"
-                )
+                self.logger.error("ResourceInfo created with a (yet) unknown media_id")
                 return
             self._media_state[resource.media_id].resources[
                 resource.resource_id
@@ -1508,8 +1509,7 @@ class Media(AbstractScheduler):
                 self.logger.error(str(e))
                 self._reset_state()
             except Exception as e:
-                self.logger.exception(
-                    f"Websocket callback unhandled exception: {e}")
+                self.logger.exception(f"Websocket callback unhandled exception: {e}")
                 self._reset_state()
 
         return wrapper
@@ -1774,7 +1774,9 @@ class Media(AbstractScheduler):
         Request the deletion of a single resource through the REST API
         HTTP DELETE /api/v<version>/media/resources/<resource_id>
         """
-        response = self._session.delete(os.path.join(self._resource_api_url, resource_id))
+        response = self._session.delete(
+            os.path.join(self._resource_api_url, resource_id)
+        )
         response.raise_for_status()
         return True
 

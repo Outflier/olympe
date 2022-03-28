@@ -24,7 +24,9 @@ def print_event(event):
     if isinstance(event, olympe.ArsdkMessageEvent):
         max_args_size = 60
         args = str(event.args)
-        args = (args[: max_args_size - 3] + "...") if len(args) > max_args_size else args
+        args = (
+            (args[: max_args_size - 3] + "...") if len(args) > max_args_size else args
+        )
         print("{}({})".format(event.message.fullName, args))
     else:
         print(str(event))
@@ -81,8 +83,8 @@ class FlightListener(olympe.EventListener):
 
     # You can also monitor a sequence of event using the complete Olympe DSL syntax
     @olympe.listen_event(
-        FlyingStateChanged(state="takingoff", _timeout=1.)
-        >> FlyingStateChanged(state="hovering", _timeout=5.)
+        FlyingStateChanged(state="takingoff", _timeout=1.0)
+        >> FlyingStateChanged(state="hovering", _timeout=5.0)
     )
     def onTakeOff(self, event, scheduler):
         # This method will be called once for each completed sequence of event
@@ -112,10 +114,14 @@ if __name__ == "__main__":
     # You can also subscribe/unsubscribe automatically using a with statement
     with FlightListener(drone) as flight_listener:
         for i in range(2):
-            assert drone(
-                FlyingStateChanged(state="hovering")
-                | (TakeOff() & FlyingStateChanged(state="hovering"))
-            ).wait().success()
+            assert (
+                drone(
+                    FlyingStateChanged(state="hovering")
+                    | (TakeOff() & FlyingStateChanged(state="hovering"))
+                )
+                .wait()
+                .success()
+            )
             assert drone(moveBy(10, 0, 0, 0)).wait().success()
             drone(Landing()).wait()
             assert drone(FlyingStateChanged(state="landed")).wait().success()

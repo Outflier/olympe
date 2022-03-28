@@ -33,7 +33,7 @@
 import subprocess
 
 
-def columns(strs, col_nb=None, aligns='<', vsep='', hsep=None):
+def columns(strs, col_nb=None, aligns="<", vsep="", hsep=None):
     """
     Format a collection of strings (strs) into multiple columns.
     If the number of columns (col_nb) is unspecified, the current terminal width
@@ -48,24 +48,27 @@ def columns(strs, col_nb=None, aligns='<', vsep='', hsep=None):
     """
 
     # pre-process function parameters
-    col_nb, cols_size, line_width = _columns_param(
-        strs, col_nb=col_nb, vsep=vsep)
+    col_nb, cols_size, line_width = _columns_param(strs, col_nb=col_nb, vsep=vsep)
 
     if not aligns:
-        aligns = '<'
+        aligns = "<"
     if len(aligns) == 1:
         aligns = aligns * col_nb
     elif len(aligns) < col_nb:
         aligns += aligns[-1] * (col_nb - len(aligns))
 
     if hsep is None:
-        hsep = '\n'
+        hsep = "\n"
     else:
-        hsep = '\n{}\n'.format(hsep * line_width)
+        hsep = "\n{}\n".format(hsep * line_width)
 
     # build the row format string
-    row_fmt = vsep.join(['{{:{}{}}}'.format(
-        align, cols_size[i]) for align, i in zip(aligns, list(range(col_nb)))])
+    row_fmt = vsep.join(
+        [
+            "{{:{}{}}}".format(align, cols_size[i])
+            for align, i in zip(aligns, list(range(col_nb)))
+        ]
+    )
 
     # format each row of input
     item = iter(strs)
@@ -73,8 +76,8 @@ def columns(strs, col_nb=None, aligns='<', vsep='', hsep=None):
     while True:
         try:
             rows += [
-                row_fmt.format(next(item), *(
-                    next(item, "") for i in range(col_nb - 1)))]
+                row_fmt.format(next(item), *(next(item, "") for i in range(col_nb - 1)))
+            ]
         except StopIteration:
             break
 
@@ -83,7 +86,7 @@ def columns(strs, col_nb=None, aligns='<', vsep='', hsep=None):
 
 
 def _term_width(default=200):
-    p = subprocess.Popen('stty size', stdout=subprocess.PIPE, shell=True)
+    p = subprocess.Popen("stty size", stdout=subprocess.PIPE, shell=True)
     p.wait()
     if p.returncode == 0:
         return int(p.stdout.read().split()[1])

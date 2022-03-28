@@ -92,7 +92,6 @@ class PilotingCommand(object):
 
 
 class ControllerState(object):
-
     def __init__(self):
         self.device_conn_status = DeviceConnStatus()
         self.device_states = DeviceStates()

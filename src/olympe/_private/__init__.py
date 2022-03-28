@@ -125,19 +125,19 @@ def string_from_arsdkxml(_input):
     """
     if not _input:
         # Handles empty string and None (we don't actually handle boolean type)
-        return u''
-    errors = 'strict'
+        return ""
+    errors = "strict"
     if isinstance(_input, bytes):
         # str input must be decoded to unicode first
-        output = _input.decode('utf-8', errors=errors)
+        output = _input.decode("utf-8", errors=errors)
     elif isinstance(_input, str):
         output = _input
     elif callable(_input):
         output = _input()
     else:
         # try to serialize the object to unicode
-        output = bytes(_input).decode('utf-8', errors=errors)
-    output = output.replace(r'\n', '\n')
+        output = bytes(_input).decode("utf-8", errors=errors)
+    output = output.replace(r"\n", "\n")
     # Finally return a unicode 'string_escaped' string
     return output
 

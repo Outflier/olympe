@@ -47,8 +47,8 @@ except ImportError:
 try:
     from importlib.machinery import ModuleSpec
 except ImportError:
-    class ModuleSpec(object):
 
+    class ModuleSpec(object):
         def __init__(self, name, loader, origin, is_package=False):
             self.name = name
             self.loader = loader
@@ -74,18 +74,20 @@ class ModuleLoader(object):
             self.messages = ArsdkMessages.get()
             self.message_root = "olympe.messages"
             self.enum_root = "olympe.enums"
-            self.olympe_root = os.path.abspath(os.path.join(__file__, '../' * 3))
+            self.olympe_root = os.path.abspath(os.path.join(__file__, "../" * 3))
         except Exception:
             traceback.print_exc()
 
     def find_spec(self, fullname, path, target=None):
         try:
-            if not fullname.startswith(self.message_root) and not fullname.startswith(self.enum_root):
+            if not fullname.startswith(self.message_root) and not fullname.startswith(
+                self.enum_root
+            ):
                 return None
-            name_path = fullname.split('.')
+            name_path = fullname.split(".")
             if len(name_path) == 2:
                 # olympe.messages
-                origin = os.path.join(self.olympe_root, fullname.replace('.', '/'))
+                origin = os.path.join(self.olympe_root, fullname.replace(".", "/"))
                 spec = ModuleSpec(fullname, self, origin=origin, is_package=False)
                 # olympe.enums
                 return spec
@@ -104,14 +106,16 @@ class ModuleLoader(object):
                 # feature name does not exists
                 return None
 
-            if (class_name is not None and
-               class_name not in self.messages.by_feature[feature_name]):
+            if (
+                class_name is not None
+                and class_name not in self.messages.by_feature[feature_name]
+            ):
                 # class name, message or enum does not exist
                 return None
 
             is_package = class_name is None
 
-            origin = os.path.join(self.olympe_root, fullname.replace('.', '/'))
+            origin = os.path.join(self.olympe_root, fullname.replace(".", "/"))
             spec = ModuleSpec(fullname, self, origin=origin, is_package=is_package)
 
             return spec
@@ -135,7 +139,7 @@ class ModuleLoader(object):
             if fullname in sys.modules:
                 return sys.modules[fullname]
 
-            name_path = fullname.split('.')
+            name_path = fullname.split(".")
             if len(name_path) == 2:
                 type_, feature_name, class_name = name_path[1], None, None
             elif len(name_path) == 3:
@@ -146,7 +150,9 @@ class ModuleLoader(object):
                 raise ImportError("Unknown module {}".format(name_path))
 
             module = imp.new_module(fullname)
-            module.__fakefile__ = os.path.join(self.olympe_root, fullname.replace('.', '/'))
+            module.__fakefile__ = os.path.join(
+                self.olympe_root, fullname.replace(".", "/")
+            )
             module.__name__ = fullname
             module.__cached__ = None
             module.__loader__ = self
@@ -159,27 +165,34 @@ class ModuleLoader(object):
                 module.__package__ = "olympe.{}".format(type_)
                 for feature_name in self.messages.by_feature.keys():
                     setattr(
-                        module, feature_name,
-                        self.load_module("{}.{}".format(fullname, feature_name))
+                        module,
+                        feature_name,
+                        self.load_module("{}.{}".format(fullname, feature_name)),
                     )
                     module.__all__.append(feature_name)
             elif class_name is not None:
                 module.__package__ = "olympe.{}.{}".format(type_, feature_name)
                 if type_ == "messages":
-                    for msg_name, message in self.messages.by_feature[feature_name][class_name].items():
+                    for msg_name, message in self.messages.by_feature[feature_name][
+                        class_name
+                    ].items():
                         obj = message()
                         obj.__module__ = module
                         setattr(module, msg_name, obj)
                         module.__all__.append(msg_name)
                 else:
-                    for enum_name, enum in self.enums._by_feature[feature_name][class_name].items():
+                    for enum_name, enum in self.enums._by_feature[feature_name][
+                        class_name
+                    ].items():
                         setattr(module, enum_name, enum)
                         module.__all__.append(enum_name)
             else:
                 module.__path__ = []
                 module.__package__ = "olympe.{}".format(type_)
                 if type_ == "messages":
-                    for msg_name, message in self.messages.by_feature[feature_name].items():
+                    for msg_name, message in self.messages.by_feature[
+                        feature_name
+                    ].items():
                         if isinstance(message, ArsdkMessage.__class__):
                             obj = message()
                             obj.__module__ = module
@@ -187,15 +200,20 @@ class ModuleLoader(object):
                             module.__all__.append(msg_name)
                 else:
                     for enum_name, enum in self.enums._by_feature[feature_name].items():
-                        if isinstance(enum, (ArsdkEnum.__class__, ArsdkBitfield.__class__)):
+                        if isinstance(
+                            enum, (ArsdkEnum.__class__, ArsdkBitfield.__class__)
+                        ):
                             setattr(module, enum_name, enum)
                             enum.__module__ = module
                             module.__all__.append(enum_name)
-                for class_name, class_def in self.messages.by_feature[feature_name].items():
+                for class_name, class_def in self.messages.by_feature[
+                    feature_name
+                ].items():
                     if not isinstance(class_def, ArsdkMessage.__class__):
                         setattr(
-                            module, class_name,
-                            self.load_module("{}.{}".format(fullname, class_name))
+                            module,
+                            class_name,
+                            self.load_module("{}.{}".format(fullname, class_name)),
                         )
                         module.__all__.append(class_name)
             sys.modules[fullname] = module
@@ -220,7 +238,7 @@ class ModuleLoader(object):
                 elif isinstance(obj, Mapping):
                     source += "\n\nclass {}:".format(name)
                     for message in obj.values():
-                        source += indent("\n",  "   ")
+                        source += indent("\n", "   ")
                         source += indent("@staticmethod", "   ")
                         source += indent(message.get_source(), "   ")
                     source += "\n\n"

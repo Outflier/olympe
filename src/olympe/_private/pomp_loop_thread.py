@@ -128,16 +128,16 @@ class Future(concurrent.futures.Future):
                     else:
                         res.chain(result)
         except Exception as e:
-            self._loop.logger.exception(
-                "Unhandled exception while chaining futures"
-            )
+            self._loop.logger.exception("Unhandled exception while chaining futures")
             result.set_exception(e)
         except:  # noqa
             result.cancel()
 
     def then(self, fn, deferred=False):
         result = Future(self._loop)
-        self.add_done_callback(lambda _: self._then_callback(fn, result, deferred=deferred))
+        self.add_done_callback(
+            lambda _: self._then_callback(fn, result, deferred=deferred)
+        )
         return result
 
     def result_or_cancel(self, timeout=None):
@@ -239,9 +239,7 @@ class PompLoopThread(threading.Thread):
             try:
                 ret = func(*args, **kwds)
             except Exception as e:
-                self.logger.exception(
-                    "Unhandled exception in async task function"
-                )
+                self.logger.exception("Unhandled exception in async task function")
                 future.set_exception(e)
             else:
                 if not isinstance(ret, concurrent.futures.Future):
@@ -273,8 +271,7 @@ class PompLoopThread(threading.Thread):
         """
         for i, (future, _, _, _) in enumerate(task_list[:]):
             try:
-                if not future.running() and (
-                        not future.set_running_or_notify_cancel()):
+                if not future.running() and (not future.set_running_or_notify_cancel()):
                     self.logger.exception(f"Failed to run {future}")
                     del task_list[i]
             except RuntimeError:
@@ -285,9 +282,7 @@ class PompLoopThread(threading.Thread):
             try:
                 ret = f(*args, **kwds)
             except Exception as e:
-                self.logger.exception(
-                    "Unhandled exception in async task function"
-                )
+                self.logger.exception("Unhandled exception in async task function")
                 future.set_exception(e)
                 continue
             except:  # noqa
@@ -332,7 +327,9 @@ class PompLoopThread(threading.Thread):
             od.pomp_evt_signal(self.wakeup_evt)
 
     def add_fd_to_loop(self, fd, cb, fd_events, userdata=None):
-        return self.run_async(self._add_fd_to_loop, fd, cb, fd_events, userdata=userdata)
+        return self.run_async(
+            self._add_fd_to_loop, fd, cb, fd_events, userdata=userdata
+        )
 
     def has_fd(self, fd):
         try:
@@ -361,12 +358,11 @@ class PompLoopThread(threading.Thread):
             ctypes.c_int32(fd),
             od.uint32_t(int(fd_events)),
             self.pomp_fd_callbacks[fd],
-            userdata
+            userdata,
         )
         if res != 0:
             raise RuntimeError(
-                f"Cannot add fd '{fd}' to pomp loop: "
-                f"{os.strerror(-res)} ({res})"
+                f"Cannot add fd '{fd}' to pomp loop: " f"{os.strerror(-res)} ({res})"
             )
 
     def remove_fd_from_loop(self, fd):
@@ -416,8 +412,7 @@ class PompLoopThread(threading.Thread):
         self.pomp_event_callbacks.pop(evt_id, None)
         if self.pomp_events.pop(evt_id, None) is not None:
             if od.pomp_evt_detach_from_loop(pomp_evt, self.pomp_loop) != 0:
-                self.logger.error(
-                    f"Cannot remove event '{evt_id}' from pomp loop")
+                self.logger.error(f"Cannot remove event '{evt_id}' from pomp loop")
 
     def _destroy_pomp_loop_fds(self):
         evts = list(self.pomp_events.values())[:]
@@ -440,8 +435,7 @@ class PompLoopThread(threading.Thread):
             res = od.pomp_loop_destroy(self.pomp_loop)
 
             if res != 0:
-                self.logger.error(
-                    f"Error while destroying pomp loop: {res}")
+                self.logger.error(f"Error while destroying pomp loop: {res}")
                 return False
             else:
                 self.logger.info("Pomp loop has been destroyed")
@@ -480,8 +474,7 @@ class PompLoopThread(threading.Thread):
         res = od.pomp_timer_destroy(pomp_timer)
 
         if res != 0:
-            self.logger.error(
-                f"Error while destroying pomp loop timer: {res}")
+            self.logger.error(f"Error while destroying pomp loop timer: {res}")
             return False
         else:
             del self.pomp_timers[id(pomp_timer)]
@@ -503,8 +496,7 @@ class PompLoopThread(threading.Thread):
             self.cleanup_functions.remove(fn)
         except ValueError:
             if not ignore_error:
-                self.logger.error(
-                    f"Failed to unregister cleanup function '{fn}'")
+                self.logger.error(f"Failed to unregister cleanup function '{fn}'")
 
     def _collect_futures(self):
         self.futures = list(filter(lambda f: f.running(), self.futures))
@@ -515,13 +507,11 @@ class PompLoopThread(threading.Thread):
             try:
                 cleanup()
             except Exception:
-                self.logger.exception(
-                    "Unhandled exception in cleanup function"
-                )
+                self.logger.exception("Unhandled exception in cleanup function")
         self.cleanup_functions = []
 
         # Execute asynchronous cleanup actions
-        timeout = 3.  # seconds
+        timeout = 3.0  # seconds
         count_timeout = 1000 * float(timeout) / self.pomptimeout_ms
         count = 0
         self.async_cleanup_running = True
@@ -531,7 +521,9 @@ class PompLoopThread(threading.Thread):
             self._run_task_list(self.deferred_pomp_task)
             self._collect_futures()
             if count > count_timeout:
-                self.logger.error(f'Deferred cleanup action are still pending after {timeout}s')
+                self.logger.error(
+                    f"Deferred cleanup action are still pending after {timeout}s"
+                )
                 break
             count += 1
 
