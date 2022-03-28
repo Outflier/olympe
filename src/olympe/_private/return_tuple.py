@@ -35,11 +35,7 @@ from olympe.tools.error import ErrorCodeDrone
 import itertools
 
 
-class ReturnTuple(
-        namedtuple(
-            'ReturnTuple',
-            ['OK', 'message', 'value', 'error_code']
-        )):
+class ReturnTuple(namedtuple("ReturnTuple", ["OK", "message", "value", "error_code"])):
     """
     A namedtuple used as a return type
 
@@ -58,10 +54,10 @@ class ReturnTuple(
     __slots = ()
     _iterlen = {}
 
-    def __new__(cls, OK=False, message=None,
-                value=None, error_code=None, _iterlen=None):
-        self = super(ReturnTuple, cls).__new__(
-            cls, OK, message, value, error_code)
+    def __new__(
+        cls, OK=False, message=None, value=None, error_code=None, _iterlen=None
+    ):
+        self = super(ReturnTuple, cls).__new__(cls, OK, message, value, error_code)
         self._set_iterlen(_iterlen)
         return self
 
@@ -89,8 +85,8 @@ class ReturnTuple(
             return super(ReturnTuple, self).__iter__()
         elif n > len(self):
             raise ValueError(
-                "not enough values to unpack (expected {}, got {})".format(
-                    n, len(self)))
+                "not enough values to unpack (expected {}, got {})".format(n, len(self))
+            )
         else:
             return itertools.islice(self._unpack(), n)
 
@@ -103,8 +99,7 @@ class ReturnTuple(
 
     def __getnewargs__(self):
         # used by copy / deepcopy
-        return tuple(list(self._unpack()) +
-                     [self._get_iterlen()])
+        return tuple(list(self._unpack()) + [self._get_iterlen()])
 
     def __reduce__(self):
         # used by pickle
@@ -153,5 +148,5 @@ def makeReturnTuple(*args):
         # functional value
         args[2] if len(args) > 2 else None,
         # error code
-        args[0]
+        args[0],
     )

@@ -79,12 +79,12 @@ class Device(object):
         arsdk_device=None,
         backend=None,
     ):
-
         def _str_init(_input):
             if isinstance(_input, bytes):
-                return _input.decode('utf-8')
+                return _input.decode("utf-8")
             else:
                 return _input
+
         self.serial = _str_init(serial)
         self.name = _str_init(name)
         self.type = device_type
@@ -235,9 +235,7 @@ class Discovery(ABC):
         # then, destroy it
         res = self._destroy_discovery()
         if res != 0:
-            self.logger.error(
-                "Error while destroying discovery object: {}".format(res)
-            )
+            self.logger.error("Error while destroying discovery object: {}".format(res))
         else:
             self.logger.debug("Discovery object has been destroyed")
 
@@ -401,10 +399,14 @@ class DiscoveryNetRaw(Discovery):
                 if device.ip_addr == "192.168.53.1":
                     device.type = od.ARSDK_DEVICE_TYPE_SKYCTRL_3
                     device.name = "Skycontroller 3"
-                elif device.ip_addr in (
-                    "192.168.42.1",
-                    "192.168.43.1",
-                ) or device.ip_addr.startswith("10.202.0."):
+                elif (
+                    device.ip_addr
+                    in (
+                        "192.168.42.1",
+                        "192.168.43.1",
+                    )
+                    or device.ip_addr.startswith("10.202.0.")
+                ):
                     device.type = od.ARSDK_DEVICE_TYPE_ANAFI4K
                     device.name = "ANAFI-{}".format(7 * "X")
 
@@ -446,15 +448,18 @@ class DiscoveryNetRaw(Discovery):
                     self.logger.debug("{} is unreachable".format(device.ip_addr))
                     return
                 if res != 0:
-                    self.logger.debug("{}:{} is closed".format(device.ip_addr, device.port))
+                    self.logger.debug(
+                        "{}:{} is closed".format(device.ip_addr, device.port)
+                    )
                     return
         # add this device to the "discovered" devices
         f = self._thread_loop.run_async(self._do_add_device, device)
         try:
             f.result_or_cancel(timeout=_DEFAULT_TIMEOUT)
         except concurrent.futures.TimeoutError:
-            self.logger.error("raw discovery timedout for {}:{}".format(
-                device.ip_addr, device.port))
+            self.logger.error(
+                "raw discovery timedout for {}:{}".format(device.ip_addr, device.port)
+            )
 
     @callback_decorator()
     def _do_add_device(self, device):

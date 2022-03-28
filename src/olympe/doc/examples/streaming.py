@@ -28,17 +28,16 @@ DRONE_IP = "10.202.0.1"
 
 
 class StreamingExample(threading.Thread):
-
     def __init__(self):
         # Create the olympe.Drone object from its IP address
         self.drone = olympe.Drone(DRONE_IP)
         self.tempd = tempfile.mkdtemp(prefix="olympe_streaming_test_")
         print("Olympe streaming example output dir: {}".format(self.tempd))
         self.h264_frame_stats = []
-        self.h264_stats_file = open(
-            os.path.join(self.tempd, 'h264_stats.csv'), 'w+')
+        self.h264_stats_file = open(os.path.join(self.tempd, "h264_stats.csv"), "w+")
         self.h264_stats_writer = csv.DictWriter(
-            self.h264_stats_file, ['fps', 'bitrate'])
+            self.h264_stats_file, ["fps", "bitrate"]
+        )
         self.h264_stats_writer.writeheader()
         self.frame_queue = queue.Queue()
         self.flush_queue_lock = threading.Lock()
@@ -52,8 +51,8 @@ class StreamingExample(threading.Thread):
         # You can record the video stream from the drone if you plan to do some
         # post processing.
         self.drone.set_streaming_output_files(
-            h264_data_file=os.path.join(self.tempd, 'h264_data.264'),
-            h264_meta_file=os.path.join(self.tempd, 'h264_metadata.json'),
+            h264_data_file=os.path.join(self.tempd, "h264_data.264"),
+            h264_meta_file=os.path.join(self.tempd, "h264_metadata.json"),
             # Here, we don't record the (huge) raw YUV video stream
             # raw_data_file=os.path.join(self.tempd,'raw_data.bin'),
             # raw_meta_file=os.path.join(self.tempd,'raw_metadata.json'),
@@ -124,10 +123,8 @@ class StreamingExample(threading.Thread):
                         break
             self.h264_frame_stats.append((frame_ts, frame_size))
             h264_fps = len(self.h264_frame_stats)
-            h264_bitrate = (
-                8 * sum(map(lambda t: t[1], self.h264_frame_stats)))
-            self.h264_stats_writer.writerow(
-                {'fps': h264_fps, 'bitrate': h264_bitrate})
+            h264_bitrate = 8 * sum(map(lambda t: t[1], self.h264_frame_stats))
+            self.h264_stats_writer.writerow({"fps": h264_fps, "bitrate": h264_bitrate})
 
     def show_yuv_frame(self, window_name, yuv_frame):
         # the VideoFrame.info() dictionary contains some useful information
@@ -188,7 +185,8 @@ class StreamingExample(threading.Thread):
                 >> (
                     TakeOff(_no_expect=True)
                     & FlyingStateChanged(
-                        state="hovering", _timeout=10, _policy="check_wait")
+                        state="hovering", _timeout=10, _policy="check_wait"
+                    )
                 )
             )
         ).wait()
@@ -198,20 +196,18 @@ class StreamingExample(threading.Thread):
             self.drone(moveBy(10, 0, 0, math.pi, _timeout=20)).wait().success()
 
         print("Landing...")
-        self.drone(
-            Landing()
-            >> FlyingStateChanged(state="landed", _timeout=5)
-        ).wait()
+        self.drone(Landing() >> FlyingStateChanged(state="landed", _timeout=5)).wait()
         print("Landed\n")
 
     def postprocessing(self):
         # Convert the raw .264 file into an .mp4 file
-        h264_filepath = os.path.join(self.tempd, 'h264_data.264')
-        mp4_filepath = os.path.join(self.tempd, 'h264_data.mp4')
+        h264_filepath = os.path.join(self.tempd, "h264_data.264")
+        mp4_filepath = os.path.join(self.tempd, "h264_data.mp4")
         subprocess.run(
-            shlex.split('ffmpeg -i {} -c:v copy -y {}'.format(
-                h264_filepath, mp4_filepath)),
-            check=True
+            shlex.split(
+                "ffmpeg -i {} -c:v copy -y {}".format(h264_filepath, mp4_filepath)
+            ),
+            check=True,
         )
 
         # Replay this MP4 video file using the default video viewer (VLC?)

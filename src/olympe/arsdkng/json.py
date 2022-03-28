@@ -41,14 +41,13 @@ from .messages import ArsdkMessage, ArsdkMessages
 
 
 class JSONEncoder(json.JSONEncoder):
-
     def default(self, o):
         if issubclass(o.__class__, ArsdkBitfield):
-            return "olympe.enums." + o.__class__._feature_name_ + '.' + str(o)
+            return "olympe.enums." + o.__class__._feature_name_ + "." + str(o)
         elif issubclass(o.__class__, ArsdkEnum):
-            return 'olympe.enums.' + o.__class__._feature_name_ + '.' + str(o)
+            return "olympe.enums." + o.__class__._feature_name_ + "." + str(o)
         elif issubclass(o.__class__, ArsdkMessage):
-            return 'olympe.messages.' + o.feature_name + '.' + str(o)
+            return "olympe.messages." + o.feature_name + "." + str(o)
         return super(JSONEncoder, self).default(o)
 
 
@@ -66,8 +65,12 @@ def replace(r, d):
     return ret
 
 
-re_enums = re.compile(r"^olympe\.enums\.(?P<feature>[^\.]+)\.(?P<enum>[^\.]+)\.(?P<enum_val>[^\.]+)$")
-re_messages = re.compile(r"^olympe\.messages\.(?P<feature>[^\.]+)\.(?P<class>[^\.]+)(\.|)(?(3)(?P<message>[^\.]+))$")
+re_enums = re.compile(
+    r"^olympe\.enums\.(?P<feature>[^\.]+)\.(?P<enum>[^\.]+)\.(?P<enum_val>[^\.]+)$"
+)
+re_messages = re.compile(
+    r"^olympe\.messages\.(?P<feature>[^\.]+)\.(?P<class>[^\.]+)(\.|)(?(3)(?P<message>[^\.]+))$"
+)
 
 
 def replace_arsdk(s):
@@ -75,21 +78,29 @@ def replace_arsdk(s):
         return s
     m = re_enums.match(s)
     if m:
-        return ArsdkEnums.get()._by_feature[m.group("feature")][m.group("enum")][m.group("enum_val")]
+        return ArsdkEnums.get()._by_feature[m.group("feature")][m.group("enum")][
+            m.group("enum_val")
+        ]
     m = re_messages.match(s)
     if m:
         message = m.groupdict()
         if not message["message"]:
             return ArsdkMessages.get().by_feature[message["feature"]][message["class"]]
         else:
-            return ArsdkMessages.get().by_feature[message["feature"]][message["class"]][message["message"]]
+            return ArsdkMessages.get().by_feature[message["feature"]][message["class"]][
+                message["message"]
+            ]
     return s
 
 
 class JSONDecoder(json.JSONDecoder):
 
-    enums = re.compile(r"^olympe\.enums\.(?P<feature>[^\.]+)\.(?P<enum>[^\.]+)\.(?P<enum_val>[^\.]+)$")
-    messages = re.compile(r"^olympe\.messages\.(?P<feature>[^\.]+)\.(?P<class>[^\.]+)(\.|)(?(3)(?P<message>[^\.]+))$")
+    enums = re.compile(
+        r"^olympe\.enums\.(?P<feature>[^\.]+)\.(?P<enum>[^\.]+)\.(?P<enum_val>[^\.]+)$"
+    )
+    messages = re.compile(
+        r"^olympe\.messages\.(?P<feature>[^\.]+)\.(?P<class>[^\.]+)(\.|)(?(3)(?P<message>[^\.]+))$"
+    )
 
     def __init__(self, *args, **kwds):
         kwds.update(object_hook=lambda o: self._object_hook(o))

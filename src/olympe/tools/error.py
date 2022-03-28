@@ -42,25 +42,35 @@ class ErrorCodes(object):
     ERROR_BAD_STATE = 3
     ERROR_GENERIC_UNKNOWN = 10
 
-    ERROR_CODES = {OK: "OK",
-                   ERROR_INVALID_PARAMS: "Error: Invalid parameters!",
-                   ERROR_OUT_OF_BOUNDS: "Error: Out of bounds parameters!",
-                   ERROR_BAD_STATE: "Error: Bad state!",
-                   ERROR_GENERIC_UNKNOWN: "Unknown error :-("}
+    ERROR_CODES = {
+        OK: "OK",
+        ERROR_INVALID_PARAMS: "Error: Invalid parameters!",
+        ERROR_OUT_OF_BOUNDS: "Error: Out of bounds parameters!",
+        ERROR_BAD_STATE: "Error: Bad state!",
+        ERROR_GENERIC_UNKNOWN: "Unknown error :-(",
+    }
 
 
 class ErrorCodeDrone(ErrorCodes):
 
     ERROR_DRONES_NOT_SUPPORTED = 100
-    ErrorCodes.ERROR_CODES[ERROR_DRONES_NOT_SUPPORTED] = "Error, not supported by the drone"
+    ErrorCodes.ERROR_CODES[
+        ERROR_DRONES_NOT_SUPPORTED
+    ] = "Error, not supported by the drone"
     ERROR_CALLBACK_NOT_CALLED = 101
     ErrorCodes.ERROR_CODES[ERROR_CALLBACK_NOT_CALLED] = "Error, callback wasn't called"
     ERROR_CONNECTION_TIMEOUT = 102
-    ErrorCodes.ERROR_CODES[ERROR_CONNECTION_TIMEOUT] = "Error, controller connection timeout"
+    ErrorCodes.ERROR_CODES[
+        ERROR_CONNECTION_TIMEOUT
+    ] = "Error, controller connection timeout"
     ERROR_CONNECTION_ACCESS_DENIED = 103
-    ErrorCodes.ERROR_CODES[ERROR_CONNECTION_ACCESS_DENIED] = "Error, controller connection access denied"
+    ErrorCodes.ERROR_CODES[
+        ERROR_CONNECTION_ACCESS_DENIED
+    ] = "Error, controller connection access denied"
     ERROR_COMMAND_NOT_SEND = 104
-    ErrorCodes.ERROR_CODES[ERROR_COMMAND_NOT_SEND] = "Error, command not send to drone or callback not received"
+    ErrorCodes.ERROR_CODES[
+        ERROR_COMMAND_NOT_SEND
+    ] = "Error, command not send to drone or callback not received"
     ERROR_PILOTING_STATE = 105
     ErrorCodes.ERROR_CODES[ERROR_PILOTING_STATE] = "Error, piloting thread not launch"
     ERROR_PARAMETER = 106

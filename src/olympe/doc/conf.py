@@ -38,10 +38,10 @@ from olympe import __version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.todo',
-    'sphinx.ext.autodoc',
-    'sphinxcontrib.seqdiag',
-    'olympe.sphinx_doc',
+    "sphinx.ext.todo",
+    "sphinx.ext.autodoc",
+    "sphinxcontrib.seqdiag",
+    "olympe.sphinx_doc",
 ]
 
 # Set up seqdiag extension
@@ -52,29 +52,29 @@ todo_include_todos = True
 todo_emit_warnings = True
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The encoding of source files.
 #
 # source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = u'Olympe documentation'
+project = "Olympe documentation"
 _year = date.today().year
 if _year == 2018:
-    copyright = u'2018, Parrot'
+    copyright = "2018, Parrot"
 else:
-    copyright = u'2018-{}, Parrot'.format(_year)
-author = u'Parrot'
+    copyright = "2018-{}, Parrot".format(_year)
+author = "Parrot"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -126,7 +126,7 @@ exclude_patterns = []
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
@@ -149,23 +149,21 @@ def read_custom_html_context(app, config):
 
 def source_preprocess(app, docname, source):
     src = source[0]
-    rendered = app.builder.templates.render_string(
-        src, app.config.html_context
-    )
+    rendered = app.builder.templates.render_string(src, app.config.html_context)
     source[0] = rendered
 
 
 def setup(app):
     # Import sphinx-copybutton extension static files (MIT licensed)
-    app.add_stylesheet('copybutton.css')
-    app.add_javascript('clipboard.min.js')
+    app.add_stylesheet("copybutton.css")
+    app.add_javascript("clipboard.min.js")
     app.add_javascript("copybutton.js")
 
-    app.add_config_value('custom_html_context_path', "", "env")
-    app.add_config_value('custom_html_context', {}, "env")
-    app.connect('config-inited', read_custom_html_context)
+    app.add_config_value("custom_html_context_path", "", "env")
+    app.add_config_value("custom_html_context", {}, "env")
+    app.connect("config-inited", read_custom_html_context)
 
-    app.connect('source-read', source_preprocess)
+    app.connect("source-read", source_preprocess)
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -209,13 +207,13 @@ html_logo = "_static/images/logo.png"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 
 html_context = {
-    'css_files': [
-        '_static/copybutton.css',  # from sphinx_copybutton extension
-        '_static/theme_overrides.css',  # override the RTD theme
+    "css_files": [
+        "_static/copybutton.css",  # from sphinx_copybutton extension
+        "_static/theme_overrides.css",  # override the RTD theme
     ],
 }
 
@@ -228,7 +226,6 @@ custom_html_context = {
     "repo_dl_url": "https://source.android.com/setup/build/downloading",
     "sdk_repo_init_args": "-u https://github.com/Parrot-Developers/groundsdk-manifest.git",
     "sphinx_doc_url": "https://developer.parrot.com/docs/sphinx",
-
 }
 
 # Add any extra paths that contain custom files (such as robots.txt or
@@ -309,7 +306,7 @@ html_show_copyright = True
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Olympe-Documentation'
+htmlhelp_basename = "Olympe-Documentation"
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -317,15 +314,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -335,8 +329,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, u'Olympe-Documentation.tex', u'Olympe Documentation',
-     u'Parrot', 'manual'),
+    (
+        master_doc,
+        "Olympe-Documentation.tex",
+        "Olympe Documentation",
+        "Parrot",
+        "manual",
+    ),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -376,10 +375,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, u'olympe-documentation', u'Olympe Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, "olympe-documentation", "Olympe Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 #
@@ -392,9 +388,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Olympe-Documentation', u'Olympe-Documentation Documentation',
-     author, 'Olympe-Documentation', 'One line description of project.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        "Olympe-Documentation",
+        "Olympe-Documentation Documentation",
+        author,
+        "Olympe-Documentation",
+        "One line description of project.",
+        "Miscellaneous",
+    ),
 ]
 
 # Documents to append as an appendix to all manuals.

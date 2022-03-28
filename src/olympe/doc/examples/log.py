@@ -4,29 +4,29 @@ import olympe
 import time
 from olympe.messages.ardrone3.Piloting import TakeOff, Landing
 
-olympe.log.update_config({
-    "handlers": {
-        "olympe_log_file": {
-            "class": "logging.FileHandler",
-            "formatter": "default_formatter",
-            "filename": "olympe.log"
+olympe.log.update_config(
+    {
+        "handlers": {
+            "olympe_log_file": {
+                "class": "logging.FileHandler",
+                "formatter": "default_formatter",
+                "filename": "olympe.log",
+            },
+            "ulog_log_file": {
+                "class": "logging.FileHandler",
+                "formatter": "default_formatter",
+                "filename": "ulog.log",
+            },
         },
-        "ulog_log_file": {
-            "class": "logging.FileHandler",
-            "formatter": "default_formatter",
-            "filename": "ulog.log"
+        "loggers": {
+            "olympe": {"handlers": ["console", "olympe_log_file"]},
+            "ulog": {
+                "level": "DEBUG",
+                "handlers": ["console", "ulog_log_file"],
+            },
         },
-    },
-    "loggers": {
-        "olympe": {
-            "handlers": ["console", "olympe_log_file"]
-        },
-        "ulog": {
-            "level": "DEBUG",
-            "handlers": ["console", "ulog_log_file"],
-        }
     }
-})
+)
 
 DRONE_IP = "10.202.0.1"
 

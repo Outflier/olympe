@@ -126,8 +126,10 @@ class DefaultScheduler(AbstractScheduler):
 
         # Setup expectations monitoring timer, this is used to detect timedout
         # expectations periodically
-        self._attr.default.expectations_timer = self._attr.default.pomp_loop_thread.create_timer(
-            lambda timer, userdata: self._garbage_collect()
+        self._attr.default.expectations_timer = (
+            self._attr.default.pomp_loop_thread.create_timer(
+                lambda timer, userdata: self._garbage_collect()
+            )
         )
         if not self._attr.default.pomp_loop_thread.set_timer(
             self._attr.default.expectations_timer, delay=200, period=15
@@ -141,7 +143,8 @@ class DefaultScheduler(AbstractScheduler):
         self._attr.default.subscribers = []
         self._attr.default.running_subscribers = defaultdict(list)
         self._attr.default.subscribers_thread_loop = PompLoopThread(
-            self._attr.default.logger, parent=pomp_loop_thread,
+            self._attr.default.logger,
+            parent=pomp_loop_thread,
         )
         self._attr.default.subscribers_thread_loop.start()
 
@@ -168,9 +171,7 @@ class DefaultScheduler(AbstractScheduler):
         ).result()
 
     def run(self, *args, **kwds):
-        return self._attr.default.pomp_loop_thread.run_async(
-            *args, **kwds
-        )
+        return self._attr.default.pomp_loop_thread.run_async(*args, **kwds)
 
     @callback_decorator()
     def _schedule(self, expectation, **kwds):
@@ -243,13 +244,18 @@ class DefaultScheduler(AbstractScheduler):
                     future = self._attr.default.subscribers_thread_loop.run_async(
                         subscriber.process
                     )
-                    self._attr.default.running_subscribers[id(subscriber)].append(future)
+                    self._attr.default.running_subscribers[id(subscriber)].append(
+                        future
+                    )
                     future.add_done_callback(
                         functools.partial(
                             lambda subscriber, future, _: self._attr.default.running_subscribers[
                                 id(subscriber)
-                            ].remove(future),
-                            subscriber, future
+                            ].remove(
+                                future
+                            ),
+                            subscriber,
+                            future,
                         )
                     )
 
@@ -1089,7 +1095,9 @@ class MultipleExpectationMixin:
             end_time = timeout + time.monotonic()
         done = set()
         while end_time is None or end_time > time.monotonic():
-            fs = OrderedDict([(e._future, e) for e in self.expectations if e not in done])
+            fs = OrderedDict(
+                [(e._future, e) for e in self.expectations if e not in done]
+            )
             for f in as_completed(fs.keys(), timeout=timeout):
                 yield fs[f]
                 done.add(fs[f])
@@ -1417,7 +1425,7 @@ class WhenSequenceExpectationsMixin:
 
     def _pending_expectations(self):
         return (
-            self.expectations[len(self.matched_expectations):]
+            self.expectations[len(self.matched_expectations) :]
             if len(self.matched_expectations) < len(self.expectations)
             else []
         )

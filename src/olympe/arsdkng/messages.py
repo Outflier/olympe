@@ -35,6 +35,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 from future.builtins import str, bytes
 from future.builtins import int
+
 try:
     # Python 2
     from __builtin__ import str as builtin_str
@@ -44,6 +45,7 @@ except ImportError:
 
 import arsdkparser
 import ctypes
+
 try:
     # Python 2
     import textwrap3 as textwrap
@@ -89,10 +91,8 @@ ARSDK_OLYMPE_CMD_MAP = {
     "Ardrone3.GPSSettings.ReturnHomeMinAltitude": "set_return_home_altitude",
     "Ardrone3.GPSSettings.SendControllerGPS": "set_controller_gps_location",
     "Ardrone3.MediaRecord.PictureV2": "take_picture_v2",
-
     # "Ardrone3.MediaRecord.VideoV2": ["stop_video_v2", "start_video_v2"],
     # "Ardrone3.MediaStreaming.VideoEnable": ["disable_video_streaming", "enable_video_streaming"],
-
     "Ardrone3.MediaStreaming.VideoStreamMode": "set_stream_mode",
     "Ardrone3.Network.WifiAuthChannel": "get_wifi_auth_channels",
     "Ardrone3.Network.WifiScan": "wifi_scan",
@@ -103,17 +103,14 @@ ARSDK_OLYMPE_CMD_MAP = {
     "Ardrone3.PictureSettings.ExpositionSelection": "set_picture_exposition",
     "Ardrone3.PictureSettings.PictureFormatSelection": "set_picture_format",
     "Ardrone3.PictureSettings.SaturationSelection": "set_picture_saturation",
-
     # "Ardrone3.PictureSettings.TimelapseSelection":
     #   ["disable_picture_timelapse","enable_picture_timelapse"],
     # "Ardrone3.PictureSettings.VideoAutorecordSelection":
     #  ["disable_autorecord_video","enable_autorecord_video"],
-
     "Ardrone3.PictureSettings.VideoFramerate": "set_video_framerate",
     "Ardrone3.PictureSettings.VideoRecordingMode": "set_video_recording_mode",
     "Ardrone3.PictureSettings.VideoResolutions": "set_resolutions_mode",
     "Ardrone3.PictureSettings.VideoStabilizationMode": "set_video_stabilization_mode",
-
     "Ardrone3.Piloting.CancelMoveTo": "piloting_cancel_move_to",
     "Ardrone3.Piloting.Circle": "piloting_circle",
     "Ardrone3.Piloting.Emergency": "emergency",
@@ -121,16 +118,12 @@ ARSDK_OLYMPE_CMD_MAP = {
     "Ardrone3.Piloting.Landing": "landing",
     "Ardrone3.Piloting.MoveBy": "piloting_move_by",
     "Ardrone3.Piloting.MoveTo": "piloting_move_to",
-
     # "Ardrone3.Piloting.NavigateHome": ["stop_piloting_return_home", "start_piloting_return_home"],
-
     "Ardrone3.Piloting.StartPilotedPOI": "start_piloted_poi",
     "Ardrone3.Piloting.StopPilotedPOI": "stop_piloted_poi",
     "Ardrone3.Piloting.TakeOff": "take_off",
     "Ardrone3.Piloting.UserTakeOff": "set_user_take_off_state",
-
     # "Ardrone3.PilotingSettings.BankedTurn": ["disable_banked_turn", "enable_banked_turn" ],
-
     "Ardrone3.PilotingSettings.CirclingAltitude": "set_circling_altitude",
     "Ardrone3.PilotingSettings.CirclingDirection": "set_default_circling_direction",
     "Ardrone3.PilotingSettings.MaxAltitude": "set_max_altitude",
@@ -139,19 +132,12 @@ ARSDK_OLYMPE_CMD_MAP = {
     "Ardrone3.PilotingSettings.MinAltitude": "set_min_altitude",
     "Ardrone3.PilotingSettings.NoFlyOverMaxDistance": "set_no_fly_over_max_distance",
     "Ardrone3.PilotingSettings.PitchMode": "set_pitch_mode",
-    "Ardrone3.PilotingSettings.SetAutonomousFlightMaxHorizontalAcceleration":
-        "set_flightplan_max_horizontal_acceleration",
-
+    "Ardrone3.PilotingSettings.SetAutonomousFlightMaxHorizontalAcceleration": "set_flightplan_max_horizontal_acceleration",
     "Ardrone3.PilotingSettings.SetAutonomousFlightMaxHorizontalSpeed": "",
-        # ["set_max_horizontal_speed","set_flightplan_max_horizontal_speed"],
-
-    "Ardrone3.PilotingSettings.SetAutonomousFlightMaxRotationSpeed":
-        "set_flightplan_max_rotation_speed",
-    "Ardrone3.PilotingSettings.SetAutonomousFlightMaxVerticalAcceleration":
-        "set_flightplan_max_vertical_acceleration",
-    "Ardrone3.PilotingSettings.SetAutonomousFlightMaxVerticalSpeed":
-        "set_flightplan_max_vertical_speed",
-
+    # ["set_max_horizontal_speed","set_flightplan_max_horizontal_speed"],
+    "Ardrone3.PilotingSettings.SetAutonomousFlightMaxRotationSpeed": "set_flightplan_max_rotation_speed",
+    "Ardrone3.PilotingSettings.SetAutonomousFlightMaxVerticalAcceleration": "set_flightplan_max_vertical_acceleration",
+    "Ardrone3.PilotingSettings.SetAutonomousFlightMaxVerticalSpeed": "set_flightplan_max_vertical_speed",
     "Ardrone3.SpeedSettings.HullProtection": "set_hull_protection",
     "Ardrone3.SpeedSettings.MaxPitchRollRotationSpeed": "set_max_pitch_roll_rot_speed",
     "Ardrone3.SpeedSettings.MaxRotationSpeed": "set_max_rotation_speed",
@@ -166,27 +152,19 @@ ARSDK_OLYMPE_CMD_MAP = {
     "Animation.Start_parabola": "animation_start_parabola",
     "Animation.Start_spiral": "animation_start_spiral",
     "Animation.Start_vertical_reveal": "animation_start_vertical_reveal",
-
     "Camera.Unlock_exposure": "",
-
     "Common.Accessory.Config": "set_accessory_config",
     "Common.Animations.StartAnimation": "start_animation",
     "Common.Animations.StopAllAnimations": "stop_all_animations",
     "Common.Animations.StopAnimation": "stop_animation",
-
     # "Common.Calibration.MagnetoCalibration":
     #   ["aborted_calibration","start_calibration"],
     # "Common.Calibration.PitotCalibration":
     #   ["aborted_calibration_pitot", "start_calibration_pitot"],
-
     "Common.Common.AllStates": "get_all_states",
-
     "Common.Common.Reboot": "reboot",
     "Common.Controller.IsPiloting": "change_hud_state",
-
-
     "Common.FlightPlanSettings.ReturnHomeOnDisconnect": "set_rth_during_flightplan",
-
     "Common.Mavlink.Pause": "mavlink_pause",
     "Common.Mavlink.Start": "mavlink_start",
     "Common.Mavlink.Stop": "mavlink_stop",
@@ -196,16 +174,13 @@ ARSDK_OLYMPE_CMD_MAP = {
     "Common.Settings.ProductName": "set_product_name",
     "Common.Settings.Reset": "reset_all_settings",
     "Common.WifiSettings.OutdoorSetting": "set_wifi_settings_outdoor",
-
     "Follow_me.Configure_geographic": "follow_me_configure_geographic_run",
     "Follow_me.Configure_relative": "follow_me_configure_relative_run",
     "Follow_me.Start": "follow_me_start",
     "Follow_me.Stop": "follow_me_stop",
     "Follow_me.Target_framing_position": "follow_me_target_framing_position",
     "Follow_me.Target_image_detection": "follow_me_target_image_detection",
-
     "Skyctrl.AccessPointSettings.AccessPointSSID": "controller_set_wifi_ap_ssid",
-
     "Skyctrl.AccessPointSettings.WifiSelection": "controller_set_wifi_ap_settings",
     "Skyctrl.AxisFilters.DefaultAxisFilters": "controller_set_default_axis_filters",
     "Skyctrl.AxisFilters.GetCurrentAxisFilters": "controller_current_axis_filters",
@@ -214,20 +189,15 @@ ARSDK_OLYMPE_CMD_MAP = {
     "Skyctrl.AxisMappings.GetAvailableAxisMappings": "controller_available_axis_mappings",
     "Skyctrl.AxisMappings.GetCurrentAxisMappings": "controller_current_axis_mappings",
     "Skyctrl.AxisMappings.SetAxisMapping": "controller_set_axis_mapping",
-
     "Skyctrl.ButtonMappings.DefaultButtonMapping": "controller_set_default_button_mapping",
     "Skyctrl.ButtonMappings.GetAvailableButtonMappings": "controller_available_button_mappings",
     "Skyctrl.ButtonMappings.GetCurrentButtonMappings": "controller_current_button_mappings",
     "Skyctrl.ButtonMappings.SetButtonMapping": "controller_set_button_mapping",
-
     "Skyctrl.CoPiloting.SetPilotingSource": "set_piloting_source_controller",
-
     "Skyctrl.Common.AllStates": "get_controller_states",
-
     "Thermal_cam.Activate": "activate_camera_thermal",
     "Thermal_cam.Deactivate": "deactivate_camera_thermal",
     "Thermal_cam.Set_sensitivity": "set_camera_thermal_sensitivity",
-
     # FIXME: set_wifi_security is mapped to two different commands
     "Wifi.Set_security": "set_wifi_security",
     "Wifi.Update_authorized_channels": "",  # "get_wifi_auth_channels",
@@ -310,15 +280,15 @@ class ArsdkMessageMeta(type):
         obj, name_path, id_path, enums = args
 
         fullPath = tuple(filter(None, name_path))
-        fullName = '.'.join(fullPath)
+        fullName = ".".join(fullPath)
 
         cls = type.__new__(mcls, builtin_str(fullName), (mcls._base,), {})
 
         cls.fullName = fullName
         cls.prefix = fullPath[:-1]
-        cls.FULL_NAME = '_'.join(fullPath).upper()
-        cls.Full_Name = '_'.join((name[0].upper() + name[1:] for name in fullPath))
-        cls.FullName = '.'.join((name[0].upper() + name[1:] for name in fullPath))
+        cls.FULL_NAME = "_".join(fullPath).upper()
+        cls.Full_Name = "_".join((name[0].upper() + name[1:] for name in fullPath))
+        cls.FullName = ".".join((name[0].upper() + name[1:] for name in fullPath))
 
         cls.obj = obj
         cls.name_path = name_path
@@ -333,29 +303,33 @@ class ArsdkMessageMeta(type):
         cls.buffer_type = ArsdkMessageBufferType.from_arsdk(cls.obj.bufferType)
 
         cls.loglevel = logging.INFO
-        if (cls.message_type is ArsdkMessageType.EVT and
-           cls.buffer_type is not ArsdkMessageBufferType.ACK):
+        if (
+            cls.message_type is ArsdkMessageType.EVT
+            and cls.buffer_type is not ArsdkMessageBufferType.ACK
+        ):
             # Avoid being flooded by spontaneous event messages sent by the drone
             cls.loglevel = logging.DEBUG
-        elif cls.fullName in \
-            ("ardrone3.PilotingState.AltitudeChanged",
-             "ardrone3.PilotingState.AltitudeAboveGroundChanged",
-             "ardrone3.PilotingState.AttitudeChanged",
-             "ardrone3.PilotingState.GpsLocationChanged",
-             "ardrone3.PilotingState.PositionChanged",
-             "ardrone3.PilotingState.SpeedChanged",
-             "skyctrl.SkyControllerState.AttitudeChanged",
-             "mapper.button_mapping_item",
-             "mapper.axis_mapping_item",
-             "mapper.expo_map_item",
-             "mapper.inverted_map_item",):
+        elif cls.fullName in (
+            "ardrone3.PilotingState.AltitudeChanged",
+            "ardrone3.PilotingState.AltitudeAboveGroundChanged",
+            "ardrone3.PilotingState.AttitudeChanged",
+            "ardrone3.PilotingState.GpsLocationChanged",
+            "ardrone3.PilotingState.PositionChanged",
+            "ardrone3.PilotingState.SpeedChanged",
+            "skyctrl.SkyControllerState.AttitudeChanged",
+            "mapper.button_mapping_item",
+            "mapper.axis_mapping_item",
+            "mapper.expo_map_item",
+            "mapper.inverted_map_item",
+        ):
             cls.loglevel = logging.DEBUG
 
         cls.feature_name = name_path[0]
         cls.FeatureName = cls.feature_name[0].upper() + cls.feature_name[1:]
         cls.class_name = name_path[1]
-        if (cls.class_name is not None and
-           ("state" in cls.class_name.lower() or "event" in cls.class_name.lower())):
+        if cls.class_name is not None and (
+            "state" in cls.class_name.lower() or "event" in cls.class_name.lower()
+        ):
             cls.message_type = ArsdkMessageType.EVT
         cls.name = name_path[2]
 
@@ -364,7 +338,7 @@ class ArsdkMessageMeta(type):
         cls.msg_id = id_path[2]
 
         cls.id = cls.feature_id << 24 | cls.class_id << 16 | cls.msg_id
-        cls.id_name = '-'.join(map(str, filter(lambda x: x is not None, cls.id_path)))
+        cls.id_name = "-".join(map(str, filter(lambda x: x is not None, cls.id_path)))
 
         # build a list of olympe command name aliases
         cls.aliases = []
@@ -386,17 +360,20 @@ class ArsdkMessageMeta(type):
                 if cls.class_name is not None:
                     prefix = cls.class_name + "_"
                     if arg.argType.name.startswith(prefix):
-                        enum_name = arg.argType.name[len(prefix):]
+                        enum_name = arg.argType.name[len(prefix) :]
                 cls.args_enum[arg.name] = enums[cls.FeatureName][enum_name]
             elif isinstance(arg.argType, arsdkparser.ArBitfield):
-                cls.args_bitfield[arg.name] = \
-                    enums[cls.FeatureName][arg.argType.enum.name]._bitfield_type_
+                cls.args_bitfield[arg.name] = enums[cls.FeatureName][
+                    arg.argType.enum.name
+                ]._bitfield_type_
 
         cls.args_name = [arg.name for arg in cls.obj.args]
 
         cls.key_name = None
         if cls.obj.listType == arsdkparser.ArCmdListType.MAP:
-            cls.key_name = cls.obj.mapKey and cls.obj.mapKey.name or cls.obj.args[0].name
+            cls.key_name = (
+                cls.obj.mapKey and cls.obj.mapKey.name or cls.obj.args[0].name
+            )
         elif "cam_id" in cls.args_name:
             # FIXME: workaround missing MAP_ITEMS in camera.xml
             cls.callback_type = ArsdkMessageCallbackType.MAP
@@ -405,17 +382,28 @@ class ArsdkMessageMeta(type):
             # FIXME: workaround missing MAP_ITEMS in gimbal.xml
             cls.callback_type = ArsdkMessageCallbackType.MAP
             cls.key_name = "gimbal_id"
-        elif ("list_flags" in cls.args_bitfield and
-              cls.args_bitfield["list_flags"] == list_flags._bitfield_type_):
+        elif (
+            "list_flags" in cls.args_bitfield
+            and cls.args_bitfield["list_flags"] == list_flags._bitfield_type_
+        ):
             cls.callback_type = ArsdkMessageCallbackType.LIST
 
         if cls.obj.args:
-            cls.arsdk_type_args, cls.arsdk_value_attr, cls.encode_ctypes_args = map(list, zip(*(
-                cls._ar_argtype_encode_type(ar_arg.argType)
-                for ar_arg in cls.obj.args
-            )))
+            cls.arsdk_type_args, cls.arsdk_value_attr, cls.encode_ctypes_args = map(
+                list,
+                zip(
+                    *(
+                        cls._ar_argtype_encode_type(ar_arg.argType)
+                        for ar_arg in cls.obj.args
+                    )
+                ),
+            )
         else:
-            cls.arsdk_type_args, cls.arsdk_value_attr, cls.encode_ctypes_args = [], [], []
+            cls.arsdk_type_args, cls.arsdk_value_attr, cls.encode_ctypes_args = (
+                [],
+                [],
+                [],
+            )
 
         cls.args_type = OrderedDict()
         for argname, ar_arg in zip(cls.args_name, cls.obj.args):
@@ -423,18 +411,24 @@ class ArsdkMessageMeta(type):
 
         cls.timeout = TIMEOUT_BY_COMMAND.get(cls.FullName, DEFAULT_TIMEOUT)
 
-        cls.float_tol = FLOAT_TOLERANCE_BY_FEATURE.get(cls.feature_name, DEFAULT_FLOAT_TOL)
+        cls.float_tol = FLOAT_TOLERANCE_BY_FEATURE.get(
+            cls.feature_name, DEFAULT_FLOAT_TOL
+        )
 
         cls.send = None
 
         cls._expectation = None
 
         # Get information on callback ctypes arguments
-        cls.arsdk_desc = od.arsdk_cmd_find_desc(od.struct_arsdk_cmd.bind({
-            "prj_id": cls.feature_id,
-            "cls_id": cls.class_id,
-            "cmd_id": cls.msg_id,
-        }))
+        cls.arsdk_desc = od.arsdk_cmd_find_desc(
+            od.struct_arsdk_cmd.bind(
+                {
+                    "prj_id": cls.feature_id,
+                    "cls_id": cls.class_id,
+                    "cmd_id": cls.msg_id,
+                }
+            )
+        )
 
         cls.decode_ctypes_args = []
 
@@ -459,8 +453,9 @@ class ArsdkMessageMeta(type):
 
         # Fixup missing list_flags arguments for LIST_ITEM/MAP_ITEM messages
         if ("list_flags" not in cls.args_name) and (
-            cls.message_type is ArsdkMessageType.EVT and
-            cls.callback_type in (ArsdkMessageCallbackType.LIST, ArsdkMessageCallbackType.MAP)
+            cls.message_type is ArsdkMessageType.EVT
+            and cls.callback_type
+            in (ArsdkMessageCallbackType.LIST, ArsdkMessageCallbackType.MAP)
         ):
             cls.args_pos["list_flags"] = len(cls.args_pos)
             cls.args_name.append("list_flags")
@@ -470,17 +465,24 @@ class ArsdkMessageMeta(type):
             cls.encode_ctypes_args.append(ctypes.c_uint8)
 
         if cls.message_type is ArsdkMessageType.CMD:
-            cls.args_default = ArsdkMessages._default_arguments.get(cls.FullName, OrderedDict())
+            cls.args_default = ArsdkMessages._default_arguments.get(
+                cls.FullName, OrderedDict()
+            )
         else:
-            cls.args_default = OrderedDict(zip(cls.args_name, [None] * len(cls.args_name)))
-        cls.args_default_str = ", ".join((
-            "{}={}".format(argname, cls.args_default[argname])
-            if argname in cls.args_default else argname
-            for argname in cls.args_name + ['**kwds']
-        ))
+            cls.args_default = OrderedDict(
+                zip(cls.args_name, [None] * len(cls.args_name))
+            )
+        cls.args_default_str = ", ".join(
+            (
+                "{}={}".format(argname, cls.args_default[argname])
+                if argname in cls.args_default
+                else argname
+                for argname in cls.args_name + ["**kwds"]
+            )
+        )
 
         # docstring
-        cls.doc_todos = u""
+        cls.doc_todos = ""
         cls.docstring = cls._py_ar_cmd_docstring()
         cls.__doc__ = cls.docstring + "\n"
 
@@ -491,50 +493,57 @@ class ArsdkMessageMeta(type):
         """
         Returns a python docstring from an ArCmd object
         """
-        docstring = u"\n\n".join(
-            [cls.FullName] +
-            [cls._py_ar_comment_docstring(
-                cls.obj.doc,
-                cls._py_ar_args_docstring(cls.obj.args),
-                cls.obj.isDeprecated)]
+        docstring = "\n\n".join(
+            [cls.FullName]
+            + [
+                cls._py_ar_comment_docstring(
+                    cls.obj.doc,
+                    cls._py_ar_args_docstring(cls.obj.args),
+                    cls.obj.isDeprecated,
+                )
+            ]
         )
         return docstring
 
     def _py_ar_arg_directive(cls, directive, argname, doc):
-        directive = u":{} {}: ".format(directive, argname)
-        doc = u"{}{}".format(directive, doc)
+        directive = ":{} {}: ".format(directive, argname)
+        doc = "{}{}".format(directive, doc)
         doc = textwrap.fill(
-            doc,
-            subsequent_indent=(' ' * len(directive)),
-            break_long_words=False
+            doc, subsequent_indent=(" " * len(directive)), break_long_words=False
         )
         return doc
 
     def _py_ar_args_docstring(cls, ar_args):
         if cls.message_type == ArsdkMessageType.CMD:
             extra_params_docstring = (
-                "\n\n" +
-                ":param _timeout: command message timeout (defaults to {})\n".format(cls.timeout) +
-                ":type _timeout: int\n" +
-                ":param _no_expect: if True for,do not expect the usual command expectation " +
-                "(defaults to False)\n" +
-                ":type _no_expect: bool\n"
+                "\n\n"
+                + ":param _timeout: command message timeout (defaults to {})\n".format(
+                    cls.timeout
+                )
+                + ":type _timeout: int\n"
+                + ":param _no_expect: if True for,do not expect the usual command expectation "
+                + "(defaults to False)\n"
+                + ":type _no_expect: bool\n"
             )
         else:
             extra_params_docstring = (
-                "\n\n" +
-                ":param _policy: specify how to check the expectation. Possible values are " +
-                "'check', 'wait' and 'check_wait' (defaults to 'check_wait')\n" +
-                ":type _policy: `olympe.arsdkng.expectations.ExpectPolicy`\n"
+                "\n\n"
+                + ":param _policy: specify how to check the expectation. Possible values are "
+                + "'check', 'wait' and 'check_wait' (defaults to 'check_wait')\n"
+                + ":type _policy: `olympe.arsdkng.expectations.ExpectPolicy`\n"
             )
         extra_params_docstring += (
-            ":param _float_tol: specify the float comparison tolerance, a 2-tuple containing a " +
-            "relative tolerance float value and an absolute tolerate float value " +
-            "(default to {}). ".format(cls.float_tol) + "See python 3 stdlib `math.isclose` " +
-            "documentation for more information\n" +
-            ":type _float_tol: `tuple`\n"
+            ":param _float_tol: specify the float comparison tolerance, a 2-tuple containing a "
+            + "relative tolerance float value and an absolute tolerate float value "
+            + "(default to {}). ".format(cls.float_tol)
+            + "See python 3 stdlib `math.isclose` "
+            + "documentation for more information\n"
+            + ":type _float_tol: `tuple`\n"
         )
-        return "\n".join((cls._py_ar_arg_docstring(arg) for arg in ar_args)) + extra_params_docstring
+        return (
+            "\n".join((cls._py_ar_arg_docstring(arg) for arg in ar_args))
+            + extra_params_docstring
+        )
 
     def _py_ar_arg_docstring(cls, ar_arg):
         """
@@ -542,10 +551,13 @@ class ArsdkMessageMeta(type):
         """
         if isinstance(ar_arg.argType, (int,)):
             type_ = cls._py_ar_arg_directive(
-                "type", ar_arg.name, arsdkparser.ArArgType.TO_STRING[ar_arg.argType])
+                "type", ar_arg.name, arsdkparser.ArArgType.TO_STRING[ar_arg.argType]
+            )
         elif isinstance(ar_arg.argType, (arsdkparser.ArBitfield,)):
             enum = ":py:class:`olympe.enums.{}.{}`".format(
-                ".".join(cls.prefix), cls.args_bitfield[ar_arg.name]._enum_type_.__name__)
+                ".".join(cls.prefix),
+                cls.args_bitfield[ar_arg.name]._enum_type_.__name__,
+            )
             doc = "BitfieldOf({}, {})".format(
                 enum,
                 arsdkparser.ArArgType.TO_STRING[ar_arg.argType.btfType],
@@ -553,15 +565,16 @@ class ArsdkMessageMeta(type):
             type_ = cls._py_ar_arg_directive("type", ar_arg.name, doc)
         elif isinstance(ar_arg.argType, (arsdkparser.ArEnum,)):
             doc = ":py:class:`olympe.enums.{}.{}`".format(
-                ".".join(cls.prefix), cls.args_enum[ar_arg.name].__name__)
+                ".".join(cls.prefix), cls.args_enum[ar_arg.name].__name__
+            )
             type_ = cls._py_ar_arg_directive("type", ar_arg.name, doc)
         else:
-            raise RuntimeError("Unknown argument type {}".format(
-                type(ar_arg.argType)))
+            raise RuntimeError("Unknown argument type {}".format(type(ar_arg.argType)))
 
         param = cls._py_ar_arg_directive(
-            "param", ar_arg.name, cls._py_ar_comment_docstring(ar_arg.doc))
-        return u"\n\n{}\n\n{}".format(type_, param)
+            "param", ar_arg.name, cls._py_ar_comment_docstring(ar_arg.doc)
+        )
+        return "\n\n{}\n\n{}".format(type_, param)
 
     def _py_ar_supported(cls, supported_devices, deprecated):
         unsupported_notice = "**Unsupported message**"
@@ -583,12 +596,14 @@ class ArsdkMessageMeta(type):
             return "**Supported by every drone product**"
         elif supported_devices == "none":
             return unsupported_notice
-        supported_devices = supported_devices.split(';')
+        supported_devices = supported_devices.split(";")
         supported_devices = list(
-            map(lambda s: s.split(':', maxsplit=2), supported_devices))
+            map(lambda s: s.split(":", maxsplit=2), supported_devices)
+        )
         try:
             supported_devices = list(
-                map(lambda s: (int(s[0], base=16), *s[1:]), supported_devices))
+                map(lambda s: (int(s[0], base=16), *s[1:]), supported_devices)
+            )
         except ValueError:
             return unsupported_notice
         ret = []
@@ -606,13 +621,15 @@ class ArsdkMessageMeta(type):
             device_str = mapping.get(device_str, device_str)
             if "anafi" in device_str.lower() or "skycontroller" in device_str.lower():
                 if until:
-                    ret.append("    :{}: since {} and until {} firmware release".format(
-                        device_str,
-                        since,
-                        until
-                    ))
+                    ret.append(
+                        "    :{}: since {} and until {} firmware release".format(
+                            device_str, since, until
+                        )
+                    )
                 else:
-                    ret.append("    :{}: with an up to date firmware".format(device_str))
+                    ret.append(
+                        "    :{}: with an up to date firmware".format(device_str)
+                    )
         if not ret:
             return unsupported_notice
 
@@ -629,20 +646,26 @@ class ArsdkMessageMeta(type):
             ret = "Triggered " + ret
         return textwrap.fill(ret, break_long_words=False)
 
-    def _py_ar_comment_docstring(cls, ar_comment, ar_args_doc=None, ar_is_deprecated=False):
+    def _py_ar_comment_docstring(
+        cls, ar_comment, ar_args_doc=None, ar_is_deprecated=False
+    ):
         """
         Returns a python docstring from an ArComment object
         """
         if isinstance(ar_comment, (str, bytes)):
             return string_from_arsdkxml(str(ar_comment))
-        ret = u""
+        ret = ""
         if ar_comment.title and not ar_comment.desc:
-            ret += u"\n\n{}".format(
-                textwrap.fill(string_from_arsdkxml(ar_comment.title), break_long_words=False),
+            ret += "\n\n{}".format(
+                textwrap.fill(
+                    string_from_arsdkxml(ar_comment.title), break_long_words=False
+                ),
             )
         elif ar_comment.desc:
-            ret += u"\n\n{}".format(
-                textwrap.fill(string_from_arsdkxml(ar_comment.desc), break_long_words=False),
+            ret += "\n\n{}".format(
+                textwrap.fill(
+                    string_from_arsdkxml(ar_comment.desc), break_long_words=False
+                ),
             )
         if ar_args_doc is not None:
             ret += ar_args_doc
@@ -656,21 +679,25 @@ class ArsdkMessageMeta(type):
             )
         if ar_comment.result:
             ret += "\n\n**Result**: {}".format(
-                textwrap.fill(string_from_arsdkxml(ar_comment.result), break_long_words=False),
+                textwrap.fill(
+                    string_from_arsdkxml(ar_comment.result), break_long_words=False
+                ),
             )
         return ret
 
     def _py_ar_cmd_expectation_docstring(cls):
-        ret = u""
+        ret = ""
         if cls.message_type == ArsdkMessageType.CMD:
             for i, expectation in enumerate(cls._expectation):
                 if isinstance(expectation, ArsdkWhenAnyExpectation):
                     ret += cls._py_ar_cmd_any_expectation_docstring(expectation)
                 else:
                     ret += (
-                        "#" + expectation.expected_message.id_name +
-                        cls._py_ar_cmd_expectation_args_docstring(
-                            expectation.expected_args)
+                        "#"
+                        + expectation.expected_message.id_name
+                        + cls._py_ar_cmd_expectation_args_docstring(
+                            expectation.expected_args
+                        )
                     )
                 if i < len(cls._expectation) - 1:
                     ret += " & "
@@ -679,26 +706,32 @@ class ArsdkMessageMeta(type):
         return ret
 
     def _py_ar_cmd_any_expectation_docstring(cls, any_expectations):
-        ret = u"("
+        ret = "("
         for i, expectation in enumerate(any_expectations):
             ret += (
-                "#" + expectation.expected_message.id_name +
-                cls._py_ar_cmd_expectation_args_docstring(
-                    expectation.expected_args)
+                "#"
+                + expectation.expected_message.id_name
+                + cls._py_ar_cmd_expectation_args_docstring(expectation.expected_args)
             )
             if i < len(any_expectations) - 1:
                 ret += " | "
-        ret += u")"
+        ret += ")"
         return ret
 
     def _py_ar_cmd_expectation_args_docstring(cls, args):
         args = args.copy()
         args.update(_policy="'wait'")
-        ret = u"("
-        ret += u", ".join((argname + "=" + cls._py_ar_cmd_expectation_argval_docstring(
-            argname, argval) for argname, argval in args.items()))
-        ret += u")"
-        ret = ret.replace('this.', 'self.')
+        ret = "("
+        ret += ", ".join(
+            (
+                argname
+                + "="
+                + cls._py_ar_cmd_expectation_argval_docstring(argname, argval)
+                for argname, argval in args.items()
+            )
+        )
+        ret += ")"
+        ret = ret.replace("this.", "self.")
         return ret
 
     def _py_ar_cmd_expectation_argval_docstring(cls, argname, argval):
@@ -707,15 +740,18 @@ class ArsdkMessageMeta(type):
         elif isinstance(argval, ArsdkBitfield):
             return argval.pretty()
         elif callable(argval):
-            command_args = OrderedDict(((arg, "this.{}".format(arg)) for arg in cls.args_name))
+            command_args = OrderedDict(
+                ((arg, "this.{}".format(arg)) for arg in cls.args_name)
+            )
             try:
                 return argval(cls, command_args)
             except KeyError:
-                cls.doc_todos += u"\n\n.. todo::\n    {}".format(
+                cls.doc_todos += "\n\n.. todo::\n    {}".format(
                     "Fix wrong expectation definition for {}:\n    {}".format(
                         cls.fullName,
                         "Invalid parameter value for the '{}' expectation parameter\n".format(
-                            argname)
+                            argname
+                        ),
                     )
                 )
                 return "InternalError"
@@ -727,10 +763,11 @@ class ArsdkMessageMeta(type):
         docstring = cls.docstring
         # The docstring needs to be correctly indented in order to be
         # interpreted just below
-        docstring = u"\n" + u"\n".join(
-            [u" " * 16 + doc.strip() for doc in docstring.splitlines()])
+        docstring = "\n" + "\n".join(
+            [" " * 16 + doc.strip() for doc in docstring.splitlines()]
+        )
         return textwrap.dedent(
-            u"""
+            """
             def {name}(self, {defaulted_args}):
                 u\"""{docstring}
                 \"""
@@ -743,7 +780,10 @@ class ArsdkMessageMeta(type):
             """.format(
                 name=cls.name,
                 defaulted_args=cls.args_default_str,
-                args=args, docstring=docstring))
+                args=args,
+                docstring=docstring,
+            )
+        )
 
     def _create_call(cls):
         """
@@ -769,9 +809,21 @@ class ArsdkMessageMeta(type):
             arsdkparser.ArArgType.U32: (od.ARSDK_ARG_TYPE_U32, "u32", ctypes.c_uint32),
             arsdkparser.ArArgType.I64: (od.ARSDK_ARG_TYPE_I64, "i64", ctypes.c_int64),
             arsdkparser.ArArgType.U64: (od.ARSDK_ARG_TYPE_U64, "u64", ctypes.c_uint64),
-            arsdkparser.ArArgType.FLOAT: (od.ARSDK_ARG_TYPE_FLOAT, "f32", ctypes.c_float),
-            arsdkparser.ArArgType.DOUBLE: (od.ARSDK_ARG_TYPE_DOUBLE, "f64", ctypes.c_double),
-            arsdkparser.ArArgType.STRING: (od.ARSDK_ARG_TYPE_STRING, "cstr", od.char_pointer_cast),
+            arsdkparser.ArArgType.FLOAT: (
+                od.ARSDK_ARG_TYPE_FLOAT,
+                "f32",
+                ctypes.c_float,
+            ),
+            arsdkparser.ArArgType.DOUBLE: (
+                od.ARSDK_ARG_TYPE_DOUBLE,
+                "f64",
+                ctypes.c_double,
+            ),
+            arsdkparser.ArArgType.STRING: (
+                od.ARSDK_ARG_TYPE_STRING,
+                "cstr",
+                od.char_pointer_cast,
+            ),
             arsdkparser.ArArgType.ENUM: (od.ARSDK_ARG_TYPE_ENUM, "i32", ctypes.c_int32),
         }
         return arsdk_encode_type_info_map[ar_argtype]
@@ -785,7 +837,7 @@ class ArsdkMessageMeta(type):
 
         if isinstance(ar_argtype, arsdkparser.ArEnum):
             return od.ARSDK_ARG_TYPE_ENUM, "i32", ctypes.c_int32
-        elif (arbitfield or ar_bitfield_value):
+        elif arbitfield or ar_bitfield_value:
             return cls._ar_arsdk_encode_type_info(ar_argtype.btfType)
         else:
             return cls._ar_arsdk_encode_type_info(ar_argtype)
@@ -799,14 +851,16 @@ class ArsdkMessageMeta(type):
             return cls.args_enum[argname]
         elif argname in cls.args_bitfield:
             return cls.args_bitfield[argname]
-        elif ar_argtype in (arsdkparser.ArArgType.I8,
-                            arsdkparser.ArArgType.U8,
-                            arsdkparser.ArArgType.I16,
-                            arsdkparser.ArArgType.U16,
-                            arsdkparser.ArArgType.I32,
-                            arsdkparser.ArArgType.U32,
-                            arsdkparser.ArArgType.I64,
-                            arsdkparser.ArArgType.U64):
+        elif ar_argtype in (
+            arsdkparser.ArArgType.I8,
+            arsdkparser.ArArgType.U8,
+            arsdkparser.ArArgType.I16,
+            arsdkparser.ArArgType.U16,
+            arsdkparser.ArArgType.I32,
+            arsdkparser.ArArgType.U32,
+            arsdkparser.ArArgType.I64,
+            arsdkparser.ArArgType.U64,
+        ):
             return int
         elif ar_argtype in (arsdkparser.ArArgType.DOUBLE, arsdkparser.ArArgType.FLOAT):
             return float
@@ -831,13 +885,16 @@ class ArsdkMessageMeta(type):
             for expectation_obj in expectation_objs:
                 if not isinstance(expectation_obj, list):
                     cls._expectation.append(
-                        ArsdkEventExpectation.from_arsdk(messages, expectation_obj))
+                        ArsdkEventExpectation.from_arsdk(messages, expectation_obj)
+                    )
                 else:
                     cls._expectation.append(
-                        ArsdkWhenAnyExpectation.from_arsdk(messages, expectation_obj))
+                        ArsdkWhenAnyExpectation.from_arsdk(messages, expectation_obj)
+                    )
         else:
             cls._expectation = ArsdkEventExpectation(
-                cls, OrderedDict((zip(cls.args_name, [None] * len(cls.args_name)))))
+                cls, OrderedDict((zip(cls.args_name, [None] * len(cls.args_name))))
+            )
 
     def _resolve_doc(cls, messages):
         cls.docstring += "\n\n" + cls._py_ar_cmd_expectation_docstring()
@@ -852,9 +909,9 @@ class ArsdkMessageMeta(type):
             else:
                 args = "()"
             return ":py:func:`{}{}<olympe.messages.{}>`".format(
-                message.name,
-                args,
-                message.fullName)
+                message.name, args, message.fullName
+            )
+
         cls.docstring = re.sub(r"\[[\w_\\]+\]\(#([\d-]+)\)", message_ref, cls.docstring)
         cls.docstring = re.sub(r"#([\d-]+)\(([^)]*)\)", message_ref, cls.docstring)
         cls.docstring = re.sub(r"#([\d-]+)", message_ref, cls.docstring)
@@ -864,7 +921,6 @@ class ArsdkMessageMeta(type):
 
 
 class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
-
     def __init__(self):
         self.send = None
         self._reset_state()
@@ -897,12 +953,14 @@ class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
         docstring = self.docstring
         # The docstring needs to be correctly indented in order to be
         # interpreted just below
-        docstring = u"\n" + u"\n".join(
-            [u" " * 16 + doc.strip() for doc in docstring.splitlines()])
+        docstring = "\n" + "\n".join(
+            [" " * 16 + doc.strip() for doc in docstring.splitlines()]
+        )
         # TODO: remove backward compatibility for the 'timeout' message parameter
         # this parameter has been replaced by '_timeout'
-        exec(textwrap.dedent(
-            u"""
+        exec(
+            textwrap.dedent(
+                """
             def {name}_SEND({defaulted_args}):
                 u\"""{docstring}
                 \"""
@@ -913,9 +971,14 @@ class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
                 kwds['_deprecated_statedict'] = True
                 return send_command(self, {args})
             """.format(
-                name=self.name,
-                defaulted_args=self.args_default_str,
-                args=args, docstring=docstring)), locals())
+                    name=self.name,
+                    defaulted_args=self.args_default_str,
+                    args=args,
+                    docstring=docstring,
+                )
+            ),
+            locals(),
+        )
         self.send = locals()[self.name + "_SEND"]
 
     @classmethod
@@ -926,25 +989,33 @@ class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
         if not args_set.isdisjoint(kwds_set):
             raise RuntimeError(
                 "Message `{}` got multiple values for argument(s) {}".format(
-                    cls.fullName, list(args_set & kwds_set)))
+                    cls.fullName, list(args_set & kwds_set)
+                )
+            )
         args.update(kwds)
 
         # filter out None value
         args = OrderedDict([(k, v) for k, v in args.items() if v is not None])
 
         # enum conversion
-        args = OrderedDict(starmap(
-            lambda name, value: (name, cls.args_enum[name][value])
-            if (name in cls.args_enum and isinstance(value, (bytes, str))) else (name, value),
-            args.items()
-        ))
+        args = OrderedDict(
+            starmap(
+                lambda name, value: (name, cls.args_enum[name][value])
+                if (name in cls.args_enum and isinstance(value, (bytes, str)))
+                else (name, value),
+                args.items(),
+            )
+        )
 
         # bitfield conversion
-        args = OrderedDict(starmap(
-            lambda name, value: (name, cls.args_bitfield[name](value))
-            if name in cls.args_bitfield else (name, value),
-            args.items()
-        ))
+        args = OrderedDict(
+            starmap(
+                lambda name, value: (name, cls.args_bitfield[name](value))
+                if name in cls.args_bitfield
+                else (name, value),
+                args.items(),
+            )
+        )
 
         args = OrderedDict(starmap(lambda k, v: (k, v), args.items()))
         return args
@@ -969,8 +1040,11 @@ class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
 
     def _set_last_event(self, event):
         if event.message.id != self.id:
-            raise RuntimeError("Cannot set message {} last event to {}".format(
-                self.fullName, event.message.fullName))
+            raise RuntimeError(
+                "Cannot set message {} last event to {}".format(
+                    self.fullName, event.message.fullName
+                )
+            )
 
         if self.callback_type == ArsdkMessageCallbackType.STANDARD:
             self._last_event = event
@@ -979,8 +1053,9 @@ class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
             if self._last_event is None:
                 self._last_event = OrderedDict()
             key = event.args[self.key_name]
-            if (not event.args["list_flags"] or
-                    event.args["list_flags"] == [list_flags.Last]):
+            if not event.args["list_flags"] or event.args["list_flags"] == [
+                list_flags.Last
+            ]:
                 self._state[key] = event.args
             if list_flags.First in event.args["list_flags"]:
                 self._state = OrderedDict()
@@ -994,8 +1069,9 @@ class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
             else:
                 self._last_event[key] = event
         elif self.callback_type == ArsdkMessageCallbackType.LIST:
-            if (not event.args["list_flags"] or
-                    event.args["list_flags"] == [list_flags.Last]):
+            if not event.args["list_flags"] or event.args["list_flags"] == [
+                list_flags.Last
+            ]:
                 # append to the current list
                 insert_pos = next(reversed(self._state), -1) + 1
                 self._state[insert_pos] = event.args
@@ -1036,13 +1112,15 @@ class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
         @param _no_expect: if True for a command message, do not expect the usual command
             expectation (defaults to False)
         """
-        default_timeout = cls.timeout if cls.message_type is ArsdkMessageType.CMD else None
+        default_timeout = (
+            cls.timeout if cls.message_type is ArsdkMessageType.CMD else None
+        )
         default_float_tol = cls.float_tol
-        timeout = kwds.pop('_timeout', default_timeout)
-        float_tol = kwds.pop('_float_tol', default_float_tol)
-        no_expect = kwds.pop('_no_expect', False)
-        send_command = kwds.pop('_send_command', True)
-        policy = kwds.pop('_policy', "check_wait")
+        timeout = kwds.pop("_timeout", default_timeout)
+        float_tol = kwds.pop("_float_tol", default_float_tol)
+        no_expect = kwds.pop("_no_expect", False)
+        send_command = kwds.pop("_send_command", True)
+        policy = kwds.pop("_policy", "check_wait")
         if isinstance(policy, (bytes, str)):
             policy = ExpectPolicy[policy]
         else:
@@ -1050,34 +1128,46 @@ class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
 
         if not send_command and no_expect:
             raise RuntimeError(
-                "Invalid argument combination " +
-                "Message._expect(send_command=False, no_expect=True)")
+                "Invalid argument combination "
+                + "Message._expect(send_command=False, no_expect=True)"
+            )
 
         args = cls._argsmap_from_args(*args, **kwds)
         # enum conversion
-        args = OrderedDict(starmap(
-            lambda name, value: (name, cls.args_enum[name][value])
-            if (name in cls.args_enum and isinstance(value, (bytes, str))) else (name, value),
-            args.items()
-        ))
+        args = OrderedDict(
+            starmap(
+                lambda name, value: (name, cls.args_enum[name][value])
+                if (name in cls.args_enum and isinstance(value, (bytes, str)))
+                else (name, value),
+                args.items(),
+            )
+        )
 
         # bitfield conversion
-        args = OrderedDict(starmap(
-            lambda name, value: (name, cls.args_bitfield[name](value))
-            if name in cls.args_bitfield else (name, value),
-            args.items()
-        ))
+        args = OrderedDict(
+            starmap(
+                lambda name, value: (name, cls.args_bitfield[name](value))
+                if name in cls.args_bitfield
+                else (name, value),
+                args.items(),
+            )
+        )
 
         # int -> float conversion
-        args = OrderedDict(starmap(
-            lambda name, value: (name, float(value))
-            if isinstance(value, int) and cls.args_type[name] is float else (name, value),
-            args.items()
-        ))
+        args = OrderedDict(
+            starmap(
+                lambda name, value: (name, float(value))
+                if isinstance(value, int) and cls.args_type[name] is float
+                else (name, value),
+                args.items(),
+            )
+        )
 
         if policy != ExpectPolicy.check:
             if not send_command and cls.message_type == ArsdkMessageType.CMD:
-                expectations = ArsdkWhenAllExpectations(cls._expectation.copy().expectations)
+                expectations = ArsdkWhenAllExpectations(
+                    cls._expectation.copy().expectations
+                )
             else:
                 expectations = cls._expectation.copy()
                 if cls.message_type == ArsdkMessageType.CMD:
@@ -1085,9 +1175,14 @@ class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
 
             expectations._fill_default_arguments(cls, args)
 
-            if policy == ExpectPolicy.check_wait and cls.message_type is ArsdkMessageType.EVT:
+            if (
+                policy == ExpectPolicy.check_wait
+                and cls.message_type is ArsdkMessageType.EVT
+            ):
                 check_expectation = ArsdkCheckStateExpectation(cls, args)
-                expectations = ArsdkCheckWaitStateExpectation(check_expectation, expectations)
+                expectations = ArsdkCheckWaitStateExpectation(
+                    check_expectation, expectations
+                )
             expectations.set_timeout(timeout)
             expectations.set_float_tol(float_tol)
             return expectations
@@ -1103,40 +1198,58 @@ class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
         and unicode conversions.
         """
         if len(args) != len(cls.obj.args):
-            raise TypeError("{}() takes exactly {} arguments ({} given)".format(
-                cls.FullName, len(cls.obj.args), len(args)))
+            raise TypeError(
+                "{}() takes exactly {} arguments ({} given)".format(
+                    cls.FullName, len(cls.obj.args), len(args)
+                )
+            )
 
         encoded_args = args
         # enum conversion (string --> enum type)
-        encoded_args = list(starmap(
-            lambda name, value: cls.args_enum[name][value]
-            if (name in cls.args_enum and isinstance(value, (bytes, str))) else value,
-            zip(cls.args_name, encoded_args)
-        ))
+        encoded_args = list(
+            starmap(
+                lambda name, value: cls.args_enum[name][value]
+                if (name in cls.args_enum and isinstance(value, (bytes, str)))
+                else value,
+                zip(cls.args_name, encoded_args),
+            )
+        )
 
         # enum conversion (enum type --> integer)
-        encoded_args = list(starmap(
-            lambda name, value: value._value_
-            if (name in cls.args_enum) and isinstance(value, ArsdkEnum) else value,
-            zip(cls.args_name, encoded_args)
-        ))
+        encoded_args = list(
+            starmap(
+                lambda name, value: value._value_
+                if (name in cls.args_enum) and isinstance(value, ArsdkEnum)
+                else value,
+                zip(cls.args_name, encoded_args),
+            )
+        )
 
         # bitfield conversion ([string, enum list, bitfield] --> integer)
-        encoded_args = list(starmap(
-            lambda name, value: cls.args_bitfield[name](value).to_int()
-            if name in cls.args_bitfield else value,
-            zip(cls.args_name, encoded_args)
-        ))
+        encoded_args = list(
+            starmap(
+                lambda name, value: cls.args_bitfield[name](value).to_int()
+                if name in cls.args_bitfield
+                else value,
+                zip(cls.args_name, encoded_args),
+            )
+        )
 
         # unicode -> str utf-8 encoding
-        encoded_args = list(map(
-            lambda a: a.encode('utf-8') if isinstance(a, str) else a, encoded_args))
+        encoded_args = list(
+            map(lambda a: a.encode("utf-8") if isinstance(a, str) else a, encoded_args)
+        )
 
         # python -> ctypes -> struct_arsdk_value argv conversion
         encode_args_len = len(cls.arsdk_type_args)
         argv = (od.struct_arsdk_value * encode_args_len)()
         for (i, arg, sdktype, value_attr, ctype) in zip(
-            range(encode_args_len), encoded_args, cls.arsdk_type_args, cls.arsdk_value_attr, cls.encode_ctypes_args):
+            range(encode_args_len),
+            encoded_args,
+            cls.arsdk_type_args,
+            cls.arsdk_value_attr,
+            cls.encode_ctypes_args,
+        ):
             argv[i].type = sdktype
             setattr(argv[i].data, value_attr, ctype(arg))
         return argv
@@ -1147,38 +1260,44 @@ class ArsdkMessage(with_metaclass(ArsdkMessageMeta)):
         Decode a ctypes message buffer into a list of python typed arguments. This also perform the
         necessary enum, bitfield and unicode conversions.
         """
-        decoded_args = list(map(lambda ctype: ctypes.pointer(ctype()), cls.decode_ctypes_args))
-        decoded_args_type = list(map(lambda ctype: ctypes.POINTER(ctype), cls.decode_ctypes_args))
+        decoded_args = list(
+            map(lambda ctype: ctypes.pointer(ctype()), cls.decode_ctypes_args)
+        )
+        decoded_args_type = list(
+            map(lambda ctype: ctypes.POINTER(ctype), cls.decode_ctypes_args)
+        )
         od.arsdk_cmd_dec.argtypes = od.arsdk_cmd_dec.argtypes[:2] + decoded_args_type
 
         res = od.arsdk_cmd_dec(message_buffer, cls.arsdk_desc, *decoded_args)
 
         # ctypes -> python type conversion
-        decoded_args = list(map(
-            lambda a: a.contents.value, decoded_args
-        ))
+        decoded_args = list(map(lambda a: a.contents.value, decoded_args))
 
         # bytes utf-8 -> str conversion
-        decoded_args = list(map(
-            lambda a: str(a, 'utf-8')
-            if isinstance(a, bytes) else a,
-            decoded_args
-        ))
+        decoded_args = list(
+            map(lambda a: str(a, "utf-8") if isinstance(a, bytes) else a, decoded_args)
+        )
 
         # enum conversion
-        decoded_args = list(starmap(
-            lambda name, value: cls.args_enum[name](value)
-            if name in cls.args_enum and value in cls.args_enum[name]._value2member_map_
-            else value,
-            zip(cls.args_name, decoded_args)
-        ))
+        decoded_args = list(
+            starmap(
+                lambda name, value: cls.args_enum[name](value)
+                if name in cls.args_enum
+                and value in cls.args_enum[name]._value2member_map_
+                else value,
+                zip(cls.args_name, decoded_args),
+            )
+        )
 
         # bitfield conversion
-        decoded_args = list(map(
-            lambda t: cls.args_bitfield[t[0]](t[1])
-            if t[0] in cls.args_bitfield else t[1],
-            zip(cls.args_name, decoded_args)
-        ))
+        decoded_args = list(
+            map(
+                lambda t: cls.args_bitfield[t[0]](t[1])
+                if t[0] in cls.args_bitfield
+                else t[1],
+                zip(cls.args_name, decoded_args),
+            )
+        )
 
         return (res, decoded_args)
 
@@ -1219,13 +1338,13 @@ class ArsdkMessageBufferType(OrderedEnum):
 
 
 _PRESET_SETTINGS_VIDEO = {
-    "max_altitude": {"is_set": 1, "value": 150.},
-    "max_tilt": {"is_set": 1, "value": 35.},
-    "max_distance": {"is_set": 1, "value": 2000.},
+    "max_altitude": {"is_set": 1, "value": 150.0},
+    "max_tilt": {"is_set": 1, "value": 35.0},
+    "max_distance": {"is_set": 1, "value": 2000.0},
     "no_fly_over_max_distance": {"is_set": 1, "value": 0},
-    "max_vertical_speed": {"is_set": 1, "value": 6.},
-    "max_rotation_speed": {"is_set": 1, "value": 150.},
-    "max_pitch_roll_rotation_speed": {"is_set": 1, "value": 300.},
+    "max_vertical_speed": {"is_set": 1, "value": 6.0},
+    "max_rotation_speed": {"is_set": 1, "value": 150.0},
+    "max_pitch_roll_rotation_speed": {"is_set": 1, "value": 300.0},
     "return_home_delay": {"is_set": 1, "value": 120},
     "home_type": {"is_set": 1, "value": 0},
     "video_stabilization_mode": {"is_set": 1, "value": 0},
@@ -1247,15 +1366,16 @@ class ArsdkMessages(object):
         return cls._single
 
     _default_arguments = {
-        'Ardrone3.GPSSettings.SendControllerGPS':
-            dict(horizontalAccuracy=1.0, verticalAccuracy=1.0),
-        'Ardrone3.NetworkSettings.WifiSelection': dict(channel=0),
-        'Ardrone3.PictureSettings.VideoAutorecordSelection': dict(mass_storage_id=0),
-        'Common.Mavlink.Start': dict(type="'flightPlan'"),
-        'Generic.SetDroneSettings': dict(preset=_PRESET_SETTINGS_VIDEO),
-        'Gimbal.Reset_orientation': dict(gimbal_id=0),
-        'Gimbal.Start_offsets_update': dict(gimbal_id=0),
-        'Gimbal.Stop_offsets_update': dict(gimbal_id=0),
+        "Ardrone3.GPSSettings.SendControllerGPS": dict(
+            horizontalAccuracy=1.0, verticalAccuracy=1.0
+        ),
+        "Ardrone3.NetworkSettings.WifiSelection": dict(channel=0),
+        "Ardrone3.PictureSettings.VideoAutorecordSelection": dict(mass_storage_id=0),
+        "Common.Mavlink.Start": dict(type="'flightPlan'"),
+        "Generic.SetDroneSettings": dict(preset=_PRESET_SETTINGS_VIDEO),
+        "Gimbal.Reset_orientation": dict(gimbal_id=0),
+        "Gimbal.Start_offsets_update": dict(gimbal_id=0),
+        "Gimbal.Stop_offsets_update": dict(gimbal_id=0),
     }
 
     def __init__(self, arsdk_enums=None):
@@ -1311,7 +1431,8 @@ class ArsdkMessages(object):
     def _add_arsdk_message(self, msgObj, name_path, id_path):
 
         message = ArsdkMessageMeta.__new__(
-            ArsdkMessageMeta, msgObj, name_path, id_path, self.enums)
+            ArsdkMessageMeta, msgObj, name_path, id_path, self.enums
+        )
         self.BY_NAME[message.FULL_NAME] = message
         self.By_Name[message.Full_Name] = message
         self.ByName[message.FullName] = message
@@ -1320,7 +1441,9 @@ class ArsdkMessages(object):
         feature_id = (message.id & 0xFF000000) >> 24
         class_id = (message.id & 0x00FF0000) >> 16
         self._feature_name_by_id[(feature_id, class_id)] = (
-            message.feature_name, message.class_name)
+            message.feature_name,
+            message.class_name,
+        )
         if message.prefix not in self.by_prefix:
             self.by_prefix[message.prefix] = OrderedDict()
         self.by_prefix[message.prefix][message.name] = message
@@ -1328,8 +1451,12 @@ class ArsdkMessages(object):
             self.by_feature[message.feature_name] = OrderedDict()
         if message.class_name is not None:
             if message.class_name not in self.by_feature[message.feature_name]:
-                self.by_feature[message.feature_name][message.class_name] = OrderedDict()
-            self.by_feature[message.feature_name][message.class_name][message.name] = message
+                self.by_feature[message.feature_name][
+                    message.class_name
+                ] = OrderedDict()
+            self.by_feature[message.feature_name][message.class_name][
+                message.name
+            ] = message
         else:
             self.by_feature[message.feature_name][message.name] = message
 
@@ -1351,8 +1478,7 @@ class ArsdkMessages(object):
         class_id = (message_id & 0x00FF0000) >> 16
         msg_id = message_id & 0x0000FFFF
         feature_name, class_name = self._feature_name_by_id.get(
-            (feature_id, class_id),
-            (None, None)
+            (feature_id, class_id), (None, None)
         )
         if feature_name is None:
             return (None, None, message_id)

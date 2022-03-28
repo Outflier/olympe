@@ -12,8 +12,10 @@ if __name__ == "__main__":
     with olympe.Drone(DRONE_IP) as drone:
         drone.connect()
         print("Takeoff if necessary...")
-        if (drone.get_state(FlyingStateChanged)["state"] is not
-                FlyingStateChanged_State.hovering):
+        if (
+            drone.get_state(FlyingStateChanged)["state"]
+            is not FlyingStateChanged_State.hovering
+        ):
             drone(GPSFixStateChanged(fixed=1, _timeout=10, _policy="check_wait")).wait()
             drone(
                 TakeOff(_no_expect=True)

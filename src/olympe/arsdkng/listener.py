@@ -50,7 +50,7 @@ class Subscriber:
         expectation=None,
         queue_size=default_queue_size,
         default=None,
-        timeout=None
+        timeout=None,
     ):
         self._scheduler = scheduler
         self._callback = callback
@@ -208,9 +208,9 @@ class EventListener(metaclass=_EventListenerMeta):
 
     def __init__(self, *contexts, timeout=default_timeout):
         """
-            :param scheduler: an olympe.Drone or an olympe.expectations.Scheduler
-                object for which this listener will subscribe to event messages.
-            :param timeout: the listener callbacks timeout in seconds
+        :param scheduler: an olympe.Drone or an olympe.expectations.Scheduler
+            object for which this listener will subscribe to event messages.
+        :param timeout: the listener callbacks timeout in seconds
         """
         self._contexts = contexts
         self._schedulers = [context.scheduler for context in contexts]
@@ -232,7 +232,7 @@ class EventListener(metaclass=_EventListenerMeta):
 
     def subscribe(self):
         """
-            Start to listen to the scheduler event messages
+        Start to listen to the scheduler event messages
         """
         for name, method in self.__listener_methods__.items():
             expectations = method.__listento__ or [None]
@@ -240,20 +240,22 @@ class EventListener(metaclass=_EventListenerMeta):
                 self._schedulers, self._default_subscribers
             ):
                 for expectation in expectations:
-                    self._subscribers.append((
-                        scheduler.subscribe(
-                            functools.partial(method, self),
-                            expectation,
-                            queue_size=method.__queue_size__,
-                            default=default_subscriber,
-                            timeout=self._timeout,
-                        ),
-                        scheduler,
-                    ))
+                    self._subscribers.append(
+                        (
+                            scheduler.subscribe(
+                                functools.partial(method, self),
+                                expectation,
+                                queue_size=method.__queue_size__,
+                                default=default_subscriber,
+                                timeout=self._timeout,
+                            ),
+                            scheduler,
+                        )
+                    )
 
     def unsubscribe(self):
         """
-            Stop from listening scheduler event messages
+        Stop from listening scheduler event messages
         """
         for subscriber, scheduler in self._subscribers:
             scheduler.unsubscribe(subscriber)

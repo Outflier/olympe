@@ -26,16 +26,18 @@ if __name__ == "__main__":
             assert False, "Cannot start video recording"
 
         # Send a gimbal pitch velocity target while the drone is flying
-        cameraAction = drone(gimbal.set_target(
-            gimbal_id=0,
-            control_mode="velocity",
-            yaw_frame_of_reference="none",
-            yaw=0.0,
-            pitch_frame_of_reference="none",
-            pitch=0.1,
-            roll_frame_of_reference="none",
-            roll=0.0,
-        )).wait()
+        cameraAction = drone(
+            gimbal.set_target(
+                gimbal_id=0,
+                control_mode="velocity",
+                yaw_frame_of_reference="none",
+                yaw=0.0,
+                pitch_frame_of_reference="none",
+                pitch=0.1,
+                roll_frame_of_reference="none",
+                roll=0.0,
+            )
+        ).wait()
 
         if not cameraAction.success():
             assert False, "Cannot set gimbal velocity target"
